@@ -25,6 +25,32 @@ function compare(item1,item2){
 }
 
 
+function Player(){
+	this.inantryL = [];
+	this.cavalryL = [];
+	this.artileryL = [];
+
+
+
+
+
+
+}
+
+
+Player.prototype.checkMoves = function(){
+    
+}
+
+
+
+
+
+
+
+
+
+
 function Infantry(x,y,territory){
     this.sprite =  game.add.sprite(x, y, 'infantry');
     this.sprite.width = 25;
@@ -34,8 +60,6 @@ function Infantry(x,y,territory){
     this.me = 'infantry';
     this.adv = 'cavalry';
     this.dis = 'artilery';
-
-
 
 
     this.currentTerritory = territory;
@@ -77,12 +101,12 @@ function terrFunc(string){
 
 
 function create(){
-    var test1 = POI(0,0,'#ff0000', 1,1,'USA1');
-    var test2 = POI(100,0,'#00ff00', 1,1,'USA2');
-    var test3 = POI(200,0,'#0000ff', 1,1,'USA3');
-    var test4 = POI(0,100,'#f0f0f0', 3,1,'USA4');
+    var test1 = new POI(0,0,'#ff0000', 1,1,'USA1');
+    var test2 = new POI(100,0,'#00ff00', 1,1,'USA2');
+    var test3 = new POI(200,0,'#0000ff', 1,1,'USA3');
+    var test4 = new POI(0,100,'#f0f0f0', 3,1,'USA4');
     
-    var test5 =  Infantry(30,30);
+    var test5 =  new Infantry(30,30);
     
     
     
