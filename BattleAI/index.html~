@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>BattleAI</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<script src="javascript/phaser.js"></script>
+		<script src="javascript/game.js"></script>
+	</head>
+	<body style="color:white">
+		<div id="phaser-example" width="1200" height="800">
+		</div>
+	</body>
+</html>
