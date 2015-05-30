@@ -50,6 +50,8 @@ Player.prototype.checkMoves = function(){
 
 function Infantry(x,y,territory){
     this.sprite =  game.add.sprite(x, y, 'infantry');
+    this.sprite.inputEnabled = true;
+    this.sprite.input.enableDrag();
     this.sprite.width = 25;
     this.sprite.height = 50;
     
@@ -113,5 +115,3 @@ function create(){
     var test5 =  new Infantry(30,30);
    
 }
-
-
