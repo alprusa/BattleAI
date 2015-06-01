@@ -1,9 +1,10 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update:test });
+var game = new Phaser.Game(800, 600, Phaser.AUTO, 'alex-test', { preload: preload, create: create, update:test });
 
 function preload() {
     game.load.image('infantry', 'assets/pics/lance-overdose-loader_eye.png');
 }
 var t = 0;
+var territoryList = []
 
 
 function test(){
@@ -61,6 +62,9 @@ function Infantry(x,y,territory){
     this.dis = 'artilery';
 
 
+    //stores index of territory it currently occupies
+    this.dragging = false;
+    this.prevTerritory = null;
     this.currentTerritory = territory;
 }
 
@@ -70,7 +74,7 @@ function Infantry(x,y,territory){
 
 
 
-function POI(x,y,fill,sx,sy,thing){
+function Territory(x,y,fill,sx,sy,thing){
 	//x,y is the centerpoint, shape is list of points(?)
 	
 	// create a new bitmap data object
@@ -84,19 +88,19 @@ function POI(x,y,fill,sx,sy,thing){
 	//bmd.ctx.fill();
 
 	// use the bitmap data as the texture for the sprite
-	this.territory = thing;
+	this.terName = thing;
 	this.neighbors = []
-
 
 	this.sprite = game.add.sprite(x, y, bmd);
 	this.sprite.inputEnabled = true;
     this.sprite.input.useHandCursor = true;
     this.sprite.events.onInputDown.add(terrFunc, this);
-    
 }
 
+Territory.prototype
 
-POI.prototype.addNeighbor = function(neighbor){
+
+Territory.prototype.addNeighbor = function(neighbor){
 	this.neighbors.push(neighbor);
 }
 function terrFunc(string){
@@ -107,11 +111,21 @@ function terrFunc(string){
 
 
 function create(){
-    var test1 = new POI(0,0,'#ff0000', 1,1,'USA1');
-    var test2 = new POI(100,0,'#00ff00', 1,1,'USA2');
-    var test3 = new POI(200,0,'#0000ff', 1,1,'USA3');
-    var test4 = new POI(0,100,'#f0f0f0', 3,1,'USA4');
+    var test1 = new Territory(0,0,'#ff0000', 1,1,'USA1');
+    var test2 = new Territory(100,0,'#00ff00', 1,1,'USA2');
+    var test3 = new Territory(200,0,'#0000ff', 1,1,'USA3');
+    var test4 = new Territory(0,100,'#f0f0f0', 3,1,'USA4');
+
+    territoryList.push(test1);
+    territoryList.push(test2);
+    territoryList.push(test3);
+    territoryList.push(test4);
+
+
+
+
+
     
-    var test5 =  new Infantry(30,30);
+    var test5 =  new Infantry(30,30, test1.terName);
    
 }
