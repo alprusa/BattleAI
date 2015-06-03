@@ -1,6 +1,5 @@
-var unitCost = 20;
-var maxUnits = 35;
-
+var unitCost = 35;
+var maxUnits = 12;
 var minTer = 10;
 
 //max and min value a territory can have;
@@ -9,7 +8,8 @@ var mnTVl = 5;
 //what number of currency is needed to win with econ path
 var winEcon = 500;
 //what number of territory is needed to win with econ path
-var winTerr = 7
+var winTerr = 9;
+var visitTimeLimit = 12;
 
 
 
@@ -28,6 +28,14 @@ function gameState(){
 	this.turn = 'p1';
 }
 
+gameState.prototype.copy = function(){
+	var temp = new gameState();
+	temp.players = $.extend({}, this.players);
+	temp.terrList = this.terrList.slice();
+	temp.turn = this.turn;
+	return temp;
+}
+
 
 
 
@@ -39,66 +47,133 @@ gameState.prototype.applyMove = function(territory,extra){
 	if (extraInfo == "move"){
 		if(this.terrList[territory].occupied){
 			//do battle
+
 		}else{
+			//sort between prev occupied vs prev unoccupied
+			
 			this.terrList[this.players[this.turn].cT].occupied = false;
+
+			//if we dont own this territory
+			if(this.terrList[territory].ownedBy ! = this.turn){
+				//if it was visited by the enemy
+				if(this.terrList[territory].ownedBy != 'none'){
+					this.terrList[territory].ownedBy = 'none';
+
+
+				//if it is neutral
+				}else{
+					this.terrList[territory].ownedBy = this.turn;
+				}
+
+
+			}
+
+
 			this.players[this.turn].cT=territory;
+			this.terrList[this.players[this.turn].cT].timeLimit = -1;
 			this.terrList[territory].occupied = true;
 		}
 
-	}else if(extraInfo == "recruit"){
-		currPlayer.gainUnits();
-		
-	}else if(extraInfo == "harvest"){
-		this.terrList[currPlayer.cT].applyval(currPlayer);
-		
+	}else{
+
+		if(extraInfo == "recruit"){
+			currPlayer.gainUnits();
+			
+		}else if(extraInfo == "harvest"){
+			this.terrList[currPlayer.cT].applyval(currPlayer);
+			
+		}else if(extraInfo == "switch"){
+			this.terrList[currPlayer.cT].applyval(currPlayer);
+			
+		}
+		this.turn = this.turn != 'p1' ? "p2" : "p1";
+
+
+		for(var i = 0. i< this.terrList.length(); i++){
+			if(this.terrList[i].ownedBy != 'none'){
+				if(this.players[0].cT!= i || this.players[1].ct!= i){
+					this.timeLimit++;
+
+				}
+			}
+
+
+		}
+	}
+}
+
+
+
+
+
+gameState.prototype.get_moves = function(){
+	return this.players[this.turn].check_moves(this);
+}
+
+gameState.prototype.getScores= function(){
+	var temp = {}
+
+
+	for(int i = 0; i< 2; i++){
+		temp[i].key = this.players[i].key
+
+		int controlled;
+		for(var j = 0; j< this.terrList.length; j++){
+			if(this.terrList[j].ownedBy == this.players[i].key){
+				controlled++
+			}
+		}
+		temp[i].value = [ this.players[i].value.currency , controlled, this.players[i].value.units];
 	}
 
-
-	this.turn = this.turn != 'p1' ? "p1" : "p2";
+	return temp;
 }
 
 
 
 
 
-gameState.prototype.checkMove = function(){
 
-	push( (territory,extra) )
+
+
+function Player(name, beginTer){
 	
-}
-
-
-
-
-
-
-
-
-
-//will manage checking moves and store player's individual data, shouldn't modify anything.
-function Player(name){
 	this.units = 3;
 	this.currency = 15; //how much
 	this.name = name; //player name
-	this.cT = 0; //index in gameState's terr list
+	this.cT = beginTer == null ? 0: beginTer; //index in gameState's terr list
 }
 
 Player.prototype.gainUnits = function(){
 	this.units++;
 	this.currency-=unitCost;
-
 }
 
 
-Player.prototype.check_moves = function(){
-	if(this.currency<)
 
 
+Player.prototype.check_moves = function(state){
+	var movelist = []
 
-	return 
+	if(this.currency>=unitCost){
+		moveList.push({"territory":this.ct, "extra":"recruit"})
+	}
+	if(state.terrList[this.cT].ownedBy != this.name){
+		moveList.push({"territory":this.ct, "extra":"switch"})
+	}
+
+	if(state.terrList[this.cT].val >0){
+		moveList.push({"territory":this.ct, "extra":"harvest"})
+	}
+
+
+	for(var i = 0; i< state.terrList[this.cT].neighbors.list;i++){
+		var where = state.terrList[this.cT].neighbors[i];
+		moveList.push({"territory":where, "extra":"move"})
+
+	}
+	return moveList;
 }
-
-
 
 
 
@@ -114,17 +189,18 @@ Player.prototype.check_moves = function(){
 //value is how much currency one could get from choosing to collect resources
 //occupied if someone is currently in this territoty
 //neighbors is list of other Territories you can reach
-function Territory(val,nl){
+function Territory(val,x,y, nl){
+	this.timeLimit = 0;
+	this.x = x == null ? 0: x; 
+	this.y = y == null ? 0: y; 
 	this.val = val;
 	this.ownedBy = 'none';                                     
 	this.occupied = false;
-	this.neighbors = nl;
+	this.neighbors = nl;     
 }
 
 Territory.prototype.applyVal = function(player){
 	player.currency+= this.val--;
-
-
 }
 
 
