@@ -1,4 +1,4 @@
-//AI as planner/disicion maker
+//AI as planner/desicion maker
 
 //state
 
@@ -11,11 +11,12 @@
 //units
 
 //territory
+var THINK_DURATION = 1;
 
 function node(self, state, parent=None, m=None){
     this.moves = m
     this.parent = parent;
-    this.who = state.get_whos_turn;
+    this.who = state.turn;
     this.children = new Object();
     this.untried_moves = state.get_moves;
     this.visits = 0;
@@ -29,18 +30,18 @@ node.prototype.getAgentScores = function() {
     return [this.scoreEconomic, this.scoreTerritory, this.scoreUnits];
 };
 
-funcition scoreDiff(s,who){
-	var scores = s.getScores;
+function scoreDiff(state,who){
+	var scores = state.getScores;
     var winTotal = 0;
-	if who == 'player'{
-        scores["who"][0] - scores["ai"][0] > 0 ? winTotal+=1 : -1;
-        scores["who"][1] - scores["ai"][1] > 0 ? winTotal+=1 : -1;
-        scores["who"][2] - scores["ai"][2] > 0 ? winTotal+=1 : -1;
+	if(who == 'p1'){
+        scores["who"][0] - scores["p2"][0] > 0 ? winTotal+=1 : -1;
+        scores["who"][1] - scores["p2"][1] > 0 ? winTotal+=1 : -1;
+        scores["who"][2] - scores["p2"][2] > 0 ? winTotal+=1 : -1;
     }
 	else:{
-        scores["who"][0] - scores["player"][0] > 0 ? winTotal+=1 : -1;
-        scores["who"][1] - scores["player"][1] > 0 ? winTotal+=1 : -1;
-        scores["who"][2] - scores["player"][2] > 0 ? winTotal+=1 : -1;
+        scores["who"][0] - scores["p1"][0] > 0 ? winTotal+=1 : -1;
+        scores["who"][1] - scores["p1"][1] > 0 ? winTotal+=1 : -1;
+        scores["who"][2] - scores["p1"][2] > 0 ? winTotal+=1 : -1;
     }
     return winTotal;
 }
@@ -50,66 +51,67 @@ function lambda(children, tempState, who, visits, parentVisits){
 }
 
 function lambdaVisits(children, visits){
-    return (children, visits)[-1];
+    return [children, visits][-1];
 }
 
-function think(state, func){
-    var root = node(state);
-    
-    
-    //Select untried moves score difference
-		
-	//Expand untried moves choice
-	
-	//Rollout get moves
-			
-	//Backpropagate visits/score
-    
-    //set score
-    
-    //call func
-    
-  var iterations = 0;
-  
-  var tempScore = state.getScores;
+function choice(untried_moves){
+    var rand = Math.random();
+    rand *= untried_moves.length;
+    rand = Math.floor(rand);
+    return rand;
+}
 
-  while(true){
-	iterations += 1;
-	var tempState = state;
-	var node = root;
-    
-	//Selecttypeof array[index] !== 'undefined' && array[index] !== null
-	while(node.untried_moves == null && node.children != null){
-		node = lambda(node.children, tempState, c.parent.who, c.visits, c.parent.visits);
-        node.sort();
-		tempState.applyMove(node.moves);
+function think(state){
+    var root = node(state);
+        
+    var startTime = new Date().getTime() / 1000;
+    var endTime = startTime + THINK_DURATION;
+    var currTime = 0.0;
+      
+    var tempScore = state.getScores;
+
+    while(true){
+        var tempState = state.copy;
+        var node = root;
+        
+        //Select untried moves score difference
+        while(node.untried_moves == null && node.children != null){
+            node = lambda(node.children, tempState, c.parent.who, c.visits, c.parent.visits);
+            node.sort();
+            tempState.applyMove(node.moves);
+        }
+        
+        //Expand untried moves choice
+        if (node.untried_moves != null){
+            var m = choice(node.untried_moves);
+            tempState.applyMove(m);
+            var t = Node(tempState,node,m);
+            node.children.append(t);
+            node = t;
+        }
+        
+        //Rollout get moves
+        while (tempState.get_moves() != null){
+            //hueristic here perhaps to be the choice function
+            tempState.applyMove(choice(tempState.get_moves()));
+        }
+                
+        //Backpropagate visits/score
+        while (node != None and node.parent != null){
+            node.visits += 1;
+            node.totalScore = tempState.get_score()[node.parent.who];
+            node = node.parent;
+        }
+        
+        //set score
+        node.totalScore = tempScore;
+        
+        currTime = new Date().getTime() / 1000;
+        if currTime > endTime{
+            break;
+        }
     }
-    
-	//Expand
-	if (node.untried_moves != null){
-		var m = choice(node.untried_moves);
-		tempState.applyMove(m);
-		var t = Node(tempState,node,m);
-		node.children.append(t);
-		node = t;
-    }
-	
-	//Rollout
-	while (tempState.get_moves() != null){
-        //hueristic here perhaps to be the choice function
-		tempState.applyMove(choice(tempState.get_moves()));
-    }
-			
-	//Backpropagate
-	while (node != None and node.parent != null){
-		node.visits += 1;
-		node.totalScore = tempState.get_score()[node.parent.who];
-		node = node.parent;
-    }
-		
-	node.totalScore = tempScore;
-  }
-  
+   
     var moves = lambdaVisits(root.children, c.visits).moves;
     return moves.sort();
 }
