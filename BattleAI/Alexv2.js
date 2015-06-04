@@ -22,8 +22,9 @@ var visitTimeLimit = 12;
 
 
 
-function gameState(){
-	this.terrList = [];
+function gameState(list){
+
+	this.terrList = typeof list === 'undefined' ? [] : list;
 	this.players = {'p1': new Player('p1') ,'p2': new Player('p2')}
 	this.turn = 'p1';
 }
@@ -141,7 +142,7 @@ function Player(name, beginTer){
 	this.units = 3;
 	this.currency = 15; //how much
 	this.name = name; //player name
-	this.cT = beginTer === undefined ? 0: beginTer; //index in gameState's terr list
+	this.cT = typeof beginTer === "undefined" ? 0: beginTer; //index in gameState's terr list
 }
 
 Player.prototype.gainUnits = function(){
@@ -200,14 +201,14 @@ function Territory(x,y, nl,val){
 
 
 	
-	this.x = x === undefined ? 0: x; 
-	this.y = y === undefined ? 0: y; 
+	this.x = typeof x === "undefined" ? 0: x; 
+	this.y = typeof y === "undefined" ? 0: y; 
 
 
 	this.sprite.x = this.x;
 	this.sprite.y = this.y;
 
-	if(val === undefined){
+	if(typeof val === "undefined"){
 		var rand = Math.random()
 		if (rand < 0.2) rand = (Math.random()*5)+15;
 		else rand = (Math.random()*10)+5;
