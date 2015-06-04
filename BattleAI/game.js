@@ -32,6 +32,8 @@ function create() {
     button3.onInputOver.add(over3, this);
     button3.onInputOut.add(out3, this);
 
+   
+    //draw lines
     for (var i = 0; i < originalstate.terrList.length; i++) {
         var tempterr = originalstate.terrList[i]
         for (var j = 0; j < tempterr.neighbors.length; j++) {
@@ -39,10 +41,24 @@ function create() {
             var otherterr = originalstate.terrList[index];
             var g = game.add.graphics(0, 0);
             g.lineStyle(5, 0xFFFFFF, 1);
-            g.moveTo(tempterr.sprite.x, tempterr.sprite.y);
-            g.lineTo(otherterr.sprite.x, otherterr.sprite.y);
+            g.moveTo(tempterr.x+20, tempterr.y+20);
+            g.lineTo(otherterr.x+20, otherterr.y+20);
             //g.mask = mask;
         }
+    }
+
+    //draw country circles
+    for (var i = 0; i < originalstate.terrList.length; i++) {
+        var tempterr = originalstate.terrList[i]
+        var temp = game.add.sprite(tempterr.x, tempterr.y, 'circle');
+        //this.sprite.inputEnabled = true;
+        //this.sprite.input.enableDrag();
+        temp.width = 40;
+        temp.height = 40;
+        temp.timeLimit = 0;
+
+        originalstate.terrList[i].addSprite(temp);
+
     }
 
     //var test = {x: 400, y: 400, location: 0, units: 0, contains: []};
@@ -76,9 +92,6 @@ function out3 () { button3.tint = 0xFFFFFF; }
 function setupOurGame(){
     originalstate = new gameState(buildList());
     
-    //get territories right
-    //make players somewhere
-    //
 
 
 }

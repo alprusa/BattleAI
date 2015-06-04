@@ -1,3 +1,7 @@
+
+
+
+
 var unitCost = 35;
 var maxUnits = 12;
 var minTer = 10;
@@ -25,9 +29,14 @@ var visitTimeLimit = 12;
 function gameState(list){
 
 	this.terrList = typeof list === 'undefined' ? [] : list;
+
+
+	var
 	this.players = {'p1': new Player('p1') ,'p2': new Player('p2')}
 	this.turn = 'p1';
 }
+
+
 
 gameState.prototype.copy = function(){
 	var temp = new gameState();
@@ -192,13 +201,7 @@ Player.prototype.check_moves = function(state){
 //neighbors is list of other Territories you can reach
 function Territory(x,y, nl,val){
 	console.log("got this x" + x + " and this y " + y);
-	this.sprite =  game.add.sprite(x, y, 'circle');
-    //this.sprite.inputEnabled = true;
-    //this.sprite.input.enableDrag();
-    this.sprite.width = 25;
-    this.sprite.height = 25;
-	this.timeLimit = 0;
-
+	this.sprite;
 
 
 	//shouldnt be undefined, but whatever
@@ -206,8 +209,6 @@ function Territory(x,y, nl,val){
 	this.y = typeof y === "undefined" ? 0: y; 
 
 
-	this.sprite.x = this.x;
-	this.sprite.y = this.y;
 
 	if(typeof val === "undefined"){
 		var rand = Math.random()
@@ -221,6 +222,12 @@ function Territory(x,y, nl,val){
 	this.ownedBy = 'none';                                     
 	this.occupied = false;
 	this.neighbors = nl;     
+}
+
+
+
+Territory.prototype.addSprite = function(sprite){
+	this.sprite = sprite;
 }
 
 Territory.prototype.applyVal = function(player){
