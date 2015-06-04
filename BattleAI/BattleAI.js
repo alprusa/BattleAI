@@ -47,36 +47,29 @@ function scoreDiff(state,who){
     return winTotal;
 }
 
+function idvScoreDiff(scores, index){
+    if(who == 'p1')
+        score = scores["who"][index] - scores["p2"][index];
+    }
+    else{
+        score = scores["who"][index] - scores["p1"][index];*
+    }
+    break;
+}
+
 //Heuristic calls for each of the different state types
 function UCTSelectChild(children, tempState, who, visits, parentVisits, desiredType){
     var scores = state.getScores;
     var score = 0;
-    switch(desiredType){
-        
-        
+    switch(desiredType){ 
         case "economic":
-            if(who == 'p1'){
-                score = scores["who"][0] - scores["p2"][0];
-            }
-            else{
-                score = scores["who"][0] - scores["p1"][0];
-            }
+            idvScoreDiff(scores, 0);
             break;
         case "territory":
-            if(who == 'p1'){
-                score = scores["who"][1] - scores["p2"][1];
-            }
-            else{
-                score = scores["who"][1] - scores["p1"][1];
-            }
+            idvScoreDiff(scores, 1);
             break;
         case "units":
-            if(who == 'p1'){
-                score = scores["who"][2] - scores["p2"][2];
-            }
-            else{
-                score = scores["who"][2] - scores["p1"][2];
-            }
+            idvScoreDiff(scores, 2);
             break;
         default:
             return [children, scoreDiff(tempState,who) + Math.sqrt(2*Math.log(parentVisits)/visits)][-1];
