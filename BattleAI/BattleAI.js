@@ -48,13 +48,14 @@ function scoreDiff(state,who){
 }
 
 function idvScoreDiff(scores, index){
-    if(who == 'p1')
+    var score = 0;
+    if(who == 'p1'){
         score = scores["who"][index] - scores["p2"][index];
     }
     else{
-        score = scores["who"][index] - scores["p1"][index];*
+        score = scores["who"][index] - scores["p1"][index];
     }
-    break;
+    return score;
 }
 
 //Heuristic calls for each of the different state types
@@ -65,10 +66,10 @@ function UCTSelectChild(children, tempState, who, visits, parentVisits, desiredT
         case "economic":
             idvScoreDiff(scores, 0);
             break;
-        case "territory":
+        case "expantional":
             idvScoreDiff(scores, 1);
             break;
-        case "units":
+        case "aggressive":
             idvScoreDiff(scores, 2);
             break;
         default:
@@ -143,7 +144,7 @@ function think(state, desiredType){
    
     var moves = lambdaVisits(root.children, c.visits).moves;
     
-    console.log(moves);
+    console.log("The moves chosen by " + desiredType + " ai: " + moves);
     
     return moves.sort(); //return the move that was most visited
 }
