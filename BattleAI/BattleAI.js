@@ -12,10 +12,11 @@
 
 //territory
 var THINK_DURATION = 1;
-
-function node(self, state, parent=None, m=None){
-    this.moves = m
-    this.parent = parent;
+//fixed conversion from python to javascript for extra parameters, ie switched parent = None
+//to proper syntax
+function node(self, state, parent, m){
+    this.moves = m = typeof m !== 'undefined' ? m : null;
+    this.parent = parent = typeof parent !== 'undefined' ? parent: null;;
     this.who = state.turn;
     this.children = new Object();
     this.untried_moves = state.get_moves;
@@ -38,7 +39,7 @@ function scoreDiff(state,who){
         scores["who"][1] - scores["p2"][1] > 0 ? winTotal+=1 : -1;
         scores["who"][2] - scores["p2"][2] > 0 ? winTotal+=1 : -1;
     }
-	else:{
+	else{
         scores["who"][0] - scores["p1"][0] > 0 ? winTotal+=1 : -1;
         scores["who"][1] - scores["p1"][1] > 0 ? winTotal+=1 : -1;
         scores["who"][2] - scores["p1"][2] > 0 ? winTotal+=1 : -1;
@@ -48,15 +49,16 @@ function scoreDiff(state,who){
 
 //Heuristic calls for each of the different state types
 function UCTSelectChild(children, tempState, who, visits, parentVisits, desiredType){
+    var scores = state.getScores;
+    var score = 0;
     switch(desiredType){
-        var scores = state.getScores;
-        var score = 0;
+        
         
         case "economic":
             if(who == 'p1'){
                 score = scores["who"][0] - scores["p2"][0];
             }
-            else:{
+            else{
                 score = scores["who"][0] - scores["p1"][0];
             }
             break;
@@ -64,7 +66,7 @@ function UCTSelectChild(children, tempState, who, visits, parentVisits, desiredT
             if(who == 'p1'){
                 score = scores["who"][1] - scores["p2"][1];
             }
-            else:{
+            else{
                 score = scores["who"][1] - scores["p1"][1];
             }
             break;
@@ -72,7 +74,7 @@ function UCTSelectChild(children, tempState, who, visits, parentVisits, desiredT
             if(who == 'p1'){
                 score = scores["who"][2] - scores["p2"][2];
             }
-            else:{
+            else{
                 score = scores["who"][2] - scores["p1"][2];
             }
             break;
@@ -131,7 +133,7 @@ function think(state, desiredType){
         }
                 
         //Backpropagate visits/score backpropagate from the expanded node and work back to the root node
-        while (node != None and node.parent != null){
+        while (node != None && node.parent != null){
             node.visits += 1;
             node.totalScore = tempState.get_score()[node.parent.who];
             node = node.parent;
@@ -141,7 +143,7 @@ function think(state, desiredType){
         node.totalScore = tempScore;
         
         currTime = new Date().getTime() / 1000;
-        if currTime > endTime{
+        if (currTime > endTime){
             break;
         }
     }

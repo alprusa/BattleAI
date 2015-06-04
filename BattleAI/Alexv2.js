@@ -54,7 +54,7 @@ gameState.prototype.applyMove = function(territory,extra){
 			this.terrList[this.players[this.turn].cT].occupied = false;
 
 			//if we dont own this territory
-			if(this.terrList[territory].ownedBy ! = this.turn){
+			if(this.terrList[territory].ownedBy != this.turn){
 				//if it was visited by the enemy
 				if(this.terrList[territory].ownedBy != 'none'){
 					this.terrList[territory].ownedBy = 'none';
@@ -89,7 +89,7 @@ gameState.prototype.applyMove = function(territory,extra){
 		this.turn = this.turn != 'p1' ? "p2" : "p1";
 
 
-		for(var i = 0. i< this.terrList.length(); i++){
+		for(var i = 0; i< this.terrList.length(); i++){
 			if(this.terrList[i].ownedBy != 'none'){
 				if(this.players[0].cT!= i || this.players[1].ct!= i){
 					this.timeLimit++;
@@ -114,10 +114,10 @@ gameState.prototype.getScores= function(){
 	var temp = {}
 
 
-	for(int i = 0; i< 2; i++){
+	for(var i = 0; i< 2; i++){
 		temp[i].key = this.players[i].key
 
-		int controlled;
+		var controlled;
 		for(var j = 0; j< this.terrList.length; j++){
 			if(this.terrList[j].ownedBy == this.players[i].key){
 				controlled++
