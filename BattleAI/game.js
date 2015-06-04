@@ -13,12 +13,25 @@ function preload() {
     game.load.image('expansional', '2.png');
     game.load.image('aggressive', '3.png');
     game.load.image('circle', 'circle.png');
+    game.load.image('player', 'player.png');
 
 }
 
 var button1;
 var button2;
 var button3;
+
+
+function gameLoop(){
+
+
+
+
+
+
+
+
+}
 
 function create() {
 
@@ -46,20 +59,15 @@ function create() {
             //g.mask = mask;
         }
     }
+    drawTerrs();
+    console.log(originalstate.players['p1'].cT);
+    console.log(originalstate.players['p2'].cT);
+    //drawPlayers();
 
-    //draw country circles
-    for (var i = 0; i < originalstate.terrList.length; i++) {
-        var tempterr = originalstate.terrList[i]
-        var temp = game.add.sprite(tempterr.x, tempterr.y, 'circle');
-        //this.sprite.inputEnabled = true;
-        //this.sprite.input.enableDrag();
-        temp.width = 40;
-        temp.height = 40;
-        temp.timeLimit = 0;
+    
 
-        originalstate.terrList[i].addSprite(temp);
 
-    }
+
 
     //var test = {x: 400, y: 400, location: 0, units: 0, contains: []};
     //var test2 = {x: 800, y: 400, location: 1, units: 0, contains: []};
@@ -68,6 +76,58 @@ function create() {
     //locations.push(test2);    
 
 }
+
+function drawTerrs(){
+    //draw country circles
+    for (var i = 0; i < originalstate.terrList.length; i++) {
+        var tempterr = originalstate.terrList[i]
+        var temp = game.add.sprite(tempterr.x, tempterr.y, 'circle');
+        originalstate.terrList[i].addSprite(null);
+        //this.sprite.inputEnabled = true;
+        //this.sprite.input.enableDrag();
+        temp.width = 40;
+        temp.height = 40;
+        originalstate.terrList[i].addSprite(temp);
+    }
+}
+
+
+function drawPlayers(){
+    for( item in originalstate){
+        var player = originalstate[item];
+
+
+        var tempterr = originalstate.terrList[player.cT];
+        var temp = game.add.sprite(tempterr.x, tempterr.y, 'player');
+        originalstate.terrList[i].addSprite(null);
+        //this.sprite.inputEnabled = true;
+        //this.sprite.input.enableDrag();
+        temp.width = 30;
+        temp.height =30;
+
+
+        originalstate[item].addSprite(temp);
+        
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
 
 function actionOnClick1 () {
     console.log("test");
