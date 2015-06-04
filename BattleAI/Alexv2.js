@@ -141,7 +141,7 @@ function Player(name, beginTer){
 	this.units = 3;
 	this.currency = 15; //how much
 	this.name = name; //player name
-	this.cT = beginTer == null ? 0: beginTer; //index in gameState's terr list
+	this.cT = beginTer === undefined ? 0: beginTer; //index in gameState's terr list
 }
 
 Player.prototype.gainUnits = function(){
@@ -189,11 +189,33 @@ Player.prototype.check_moves = function(state){
 //value is how much currency one could get from choosing to collect resources
 //occupied if someone is currently in this territoty
 //neighbors is list of other Territories you can reach
-function Territory(val,x,y, nl){
+function Territory(x,y, nl,val){
+	this.sprite =  game.add.sprite(x, y, 'infantry');
+    this.sprite.inputEnabled = true;
+    this.sprite.input.enableDrag();
+    this.sprite.width = 25;
+    this.sprite.height = 50;
 	this.timeLimit = 0;
-	this.x = x == null ? 0: x; 
-	this.y = y == null ? 0: y; 
-	this.val = val;
+
+
+
+	
+	this.x = x === undefined ? 0: x; 
+	this.y = y === undefined ? 0: y; 
+
+
+	this.sprite.x = this.x;
+	this.sprite.y = this.y;
+
+	if(val === undefined){
+		var rand = Math.random()
+		if (rand < 0.2) rand = (Math.random()*5)+15;
+		else rand = (Math.random()*10)+5;
+		rand = Math.round(rand);
+		this.val = rand;
+	}else{
+		this.val = val;
+	}
 	this.ownedBy = 'none';                                     
 	this.occupied = false;
 	this.neighbors = nl;     
