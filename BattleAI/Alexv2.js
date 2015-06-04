@@ -191,16 +191,17 @@ Player.prototype.check_moves = function(state){
 //occupied if someone is currently in this territoty
 //neighbors is list of other Territories you can reach
 function Territory(x,y, nl,val){
-	this.sprite =  game.add.sprite(x, y, 'infantry');
-    this.sprite.inputEnabled = true;
-    this.sprite.input.enableDrag();
+	console.log("got this x" + x + " and this y " + y);
+	this.sprite =  game.add.sprite(x, y, 'circle');
+    //this.sprite.inputEnabled = true;
+    //this.sprite.input.enableDrag();
     this.sprite.width = 25;
-    this.sprite.height = 50;
+    this.sprite.height = 25;
 	this.timeLimit = 0;
 
 
 
-	
+	//shouldnt be undefined, but whatever
 	this.x = typeof x === "undefined" ? 0: x; 
 	this.y = typeof y === "undefined" ? 0: y; 
 
