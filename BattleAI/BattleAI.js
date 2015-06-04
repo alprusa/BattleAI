@@ -46,8 +46,42 @@ function scoreDiff(state,who){
     return winTotal;
 }
 
-function lambda(children, tempState, who, visits, parentVisits){
-    return [children, scoreDiff(tempState,who) + Math.sqrt(2*Math.log(parentVisits)/visits)][-1];
+//Heuristic calls for each of the different state types
+function UCTSelectChild(children, tempState, who, visits, parentVisits, desiredType){
+    switch(desiredType){
+        var scores = state.getScores;
+        var score = 0;
+        
+        case "economic":
+            if(who == 'p1'){
+                score = scores["who"][0] - scores["p2"][0];
+            }
+            else:{
+                score = scores["who"][0] - scores["p1"][0];
+            }
+            break;
+        case "territory":
+            if(who == 'p1'){
+                score = scores["who"][1] - scores["p2"][1];
+            }
+            else:{
+                score = scores["who"][1] - scores["p1"][1];
+            }
+            break;
+        case "units":
+            if(who == 'p1'){
+                score = scores["who"][2] - scores["p2"][2];
+            }
+            else:{
+                score = scores["who"][2] - scores["p1"][2];
+            }
+            break;
+        default:
+            return [children, scoreDiff(tempState,who) + Math.sqrt(2*Math.log(parentVisits)/visits)][-1];
+            break;
+    }
+    
+    return [children, score + Math.sqrt(2*Math.log(parentVisits)/visits)][-1];
 }
 
 function lambdaVisits(children, visits){
@@ -61,7 +95,7 @@ function choice(untried_moves){
     return rand;
 }
 
-function think(state){
+function think(state, desiredType){
     var root = node(state);
         
     var startTime = new Date().getTime() / 1000;
@@ -75,14 +109,14 @@ function think(state){
         var node = root;
         
         //Select untried moves score difference
-        while(node.untried_moves == null && node.children != null){
-            node = lambda(node.children, tempState, c.parent.who, c.visits, c.parent.visits);
+        while(node.untried_moves == null && node.children != null){ //node is fully expanded and non-terminal
+            node = UCTSelectChild(node.children, tempState, c.parent.who, c.visits, c.parent.visits, desiredType);
             node.sort();
             tempState.applyMove(node.moves);
         }
         
         //Expand untried moves choice
-        if (node.untried_moves != null){
+        if (node.untried_moves != null){ //if we can expand (i.e. state/node is non-terminal)
             var m = choice(node.untried_moves);
             tempState.applyMove(m);
             var t = Node(tempState,node,m);
@@ -90,13 +124,13 @@ function think(state){
             node = t;
         }
         
-        //Rollout get moves
+        //Rollout get moves - this can often be made orders of magnitude quicker using a state.GetRandomMove() function
         while (tempState.get_moves() != null){
             //hueristic here perhaps to be the choice function
             tempState.applyMove(choice(tempState.get_moves()));
         }
                 
-        //Backpropagate visits/score
+        //Backpropagate visits/score backpropagate from the expanded node and work back to the root node
         while (node != None and node.parent != null){
             node.visits += 1;
             node.totalScore = tempState.get_score()[node.parent.who];
@@ -113,5 +147,8 @@ function think(state){
     }
    
     var moves = lambdaVisits(root.children, c.visits).moves;
-    return moves.sort();
+    
+    console.log(moves);
+    
+    return moves.sort(); //return the move that was most visited
 }
