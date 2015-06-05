@@ -3,6 +3,7 @@ var game = new Phaser.Game(1200, 800, Phaser.AUTO, 'phaser-example', { preload: 
 var locations = [];
 var sprites = [];
 var originalstate;
+var style = { font: "15px Arial", fill: "#CCCCCC", align: "left" };
 
 // 0x66CCFF - blue | 0xFF6666 - red
 
@@ -82,11 +83,12 @@ function drawTerrs(){
     for (var i = 0; i < originalstate.terrList.length; i++) {
         var tempterr = originalstate.terrList[i];
         var temp = game.add.sprite(tempterr.x, tempterr.y, 'circle');
+	var text = game.add.text(tempterr.x-20, tempterr.y+45, "Resources: "+ tempterr.val, style);
         originalstate.terrList[i].addSprite(null);
         //this.sprite.inputEnabled = true;
         //this.sprite.input.enableDrag();
-        temp.width = 40;
-        temp.height = 40;
+        temp.width = 45;
+        temp.height = 45;
         originalstate.terrList[i].addSprite(temp);
     }
 }
@@ -224,4 +226,71 @@ function render() {
 
 }
 */
+
+
+
+
+
+
+
+
+
+/*
+function onDragStart(sprite, pointer) {
+
+}
+
+function onDragStop(sprite, pointer) {
+    // FIND CLOSEST LOCATION
+    var currLocation;
+    var min = 999999;
+    for (i=0; i<locations.length; i++) {
+        var temp = Math.sqrt( (Math.pow((sprite.x-locations[i].x),2) + Math.pow((sprite.y-locations[i].y),2)) );
+        if (temp < min){
+            min = temp;
+            currLocation = locations[i];
+        }
+    }
+
+    // ADD UNIT TO LOCATION
+    if (currLocation.units < 9 || currLocation.location == sprite.prev) {
+        // Remove sprite from previous location
+        if(sprite.prev != -1) {     
+            for (i = 0; i < locations[sprite.prev].units; i++) {
+                if (locations[sprite.prev].contains[i] == sprite) {
+                    locations[sprite.prev].contains.splice(i, 1);
+                }
+            }
+            locations[sprite.prev].units--;
+        }
+        
+        sprite.prev = currLocation.location;
+        
+        // Place sprite into new location
+        var tempPos = 0;
+        for (i = 0; i < currLocation.units; i++) {
+            if (pointer.y > (currLocation.contains[i].y+(spriteSize))) {
+                tempPos = i+1;
+            }
+            else if ((pointer.y > (currLocation.contains[i].y)) || i < 3) {
+                if (pointer.x > (currLocation.contains[i].x+(spriteSize/2))) tempPos = i+1;
+            }
+
+        }
+        currLocation.units++;
+        currLocation.contains.splice(tempPos, 0, sprite);
+    }
+    
+    // UPDATE UNIT POSITIONS
+    for (i = 0; i < currLocation.units; i++) {
+        currLocation.contains[i].x = currLocation.x - 40 + ((i%3)*40);
+        currLocation.contains[i].y = currLocation.y - 40 + (Math.floor(i/3)*40);
+    }
+}
+
+function render() {
+
+}
+*/
+
 
