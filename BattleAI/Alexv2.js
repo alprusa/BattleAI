@@ -1,7 +1,4 @@
-
-
-
-
+var style = { font: "15px Arial", fill: "#CCCCCC", align: "left" };
 var unitCost = 35;
 var maxUnits = 12;
 var minTer = 10;
@@ -23,36 +20,88 @@ var visitTimeLimit = 12;
 
 
 
-
-
-
 function gameState(list){
-
 	this.terrList = typeof list === 'undefined' ? [] : list;
-
-
 	var index1 = Math.round(Math.random()*(this.terrList.length-1));
 	do{
 		var index2 = Math.round(Math.random()*(this.terrList.length-1));
-
 	}while( index1 == index2);
 
 
 	this.terrList[index1].ownedBy="p1";
-
 	this.terrList[index2].ownedBy="p2";
 
 
-	this.players = {'p1': new Player('p1',index1) ,'p2': new Player('p2',index2)}
-
-
+	this.players = {'p1': new Player('p1',index1) ,'p2': new Player('p2',index2);
 	this.turn = 'p1';
+	this.gameOver = false;
+	this.winner = "none";
+}
+
+
+gameState.prototype.doBattle() =function(){
+	list1 = [];
+	list2 = [];
+
+	for(var i = 0; i<this.players['p1'].units; ++i){
+		list1.push(Math.floor(Math.random()*3))
+	}
+
+	for(var i = 0; i<this.players['p2'].units; ++i){
+		list2.push(Math.floor(Math.random()*3))
+	}
+	list1.sort();
+	list2.sort();
+	var len = list1.length<list2.length ? list1.length :list2.length;
+
+	for(var i = 0; i<len; i++){
+		if(list1[i]<list2[i]){
+			this.players['p1'].units--;
+		}else if(list1[i]>list2[i]){
+			this.players['p2'].units--;
+		}else{
+			this.players['p1'].units--;
+			this.players['p2'].units--;
+		}
+	}
+
+	if(this.players['p1'].units == 0 && this.players['p2'].units == 0){
+		console.log("wow everyone is dead now, you both lose");
+		this.gameOver = true;
+	}else if(this.players['p1'].units == 0){
+		this.winner = "p2";
+		this.gameOver = true;
+		
+	}else if(this.players['p2'].units == 0){
+		this.winner = "p1";
+		this.gameOver = true;
+		
+	}
 }
 
 
 
+
+gameState.prototype.setupPlayers = function(){
+	this.players['p1'].addSprite();
+	this.players['p2'].addSprite();
+}
+
+
+gameState.prototype.movePlayers = function(){
+	var index1 = this.players['p1'].cT
+	var index2 = this.players['p2'].cT
+	this.players['p1'].sprite.x = this.terrList[index1].sprite.x;
+	this.players['p1'].sprite.y = this.terrList[index1].sprite.y;
+
+	this.players['p2'].sprite.x = this.terrList[index2].sprite.x;
+	this.players['p2'].sprite.y = this.terrList[index2].sprite.y;
+
+}
+
+
 gameState.prototype.copy = function(){
-	var temp = new gameState();
+	var temp = new gameState(this.terrList);
 	temp.players = $.extend({}, this.players);
 	temp.terrList = this.terrList.slice();
 	temp.turn = this.turn;
@@ -62,26 +111,29 @@ gameState.prototype.copy = function(){
 
 
 
+
+
+
 gameState.prototype.applyMove = function(move){
 
 	var territory = move['territory'];
-
 	var extra = move['extra'];
-
-	//assume the move being applied is possible, as all preconditions are checked in checkMoves
 	var extraInfo = typeof extra !== 'undefined' ? extra : "move";
+
+
 	var currPlayer = this.players[this.turn];
 
 	if (extraInfo == "move"){
 	
 		if(this.terrList[territory].occupied){
-			//do battle
+			console.log("battle!!!!");
+			this.doBattle()
+
 
 		}else{
 			//sort between prev occupied vs prev unoccupied
 			
 			this.terrList[this.players[this.turn].cT].occupied = false;
-
 			//if we dont own this territory
 			if(this.terrList[territory].ownedBy != this.turn){
 				//if it was visited by the enemy
@@ -92,6 +144,7 @@ gameState.prototype.applyMove = function(move){
 				//if it is neutral
 				}else{
 					this.terrList[territory].ownedBy = this.turn;
+					
 				}
 
 
@@ -126,9 +179,12 @@ gameState.prototype.applyMove = function(move){
 
 	}
 	this.turn = this.turn != 'p1' ? "p1" : "p2";
+
+	this.movePlayers();
 	
 
 }
+
 
 
 
@@ -164,6 +220,8 @@ gameState.prototype.getScores= function(){
 
 
 
+
+
 function Player(name, beginTer){
 	
 	this.units = 3;
@@ -173,16 +231,20 @@ function Player(name, beginTer){
 	this.sprite;
 }
 
-Player.prototype.addSprite = function(sprite){
-	this.sprite = sprite;
+Player.prototype.addSprite = function(){
+
+	var x = originalstate.terrList[this.cT].sprite.x;
+	var y = originalstate.terrList[this.cT].sprite.y;
+	
+	this.sprite = game.add.sprite(x, y, 'player');
+    this.sprite.width = 100;
+    this.sprite.height = 100;
 }
 
 Player.prototype.gainUnits = function(){
 	this.units++;
 	this.currency-=unitCost;
 }
-
-
 
 
 Player.prototype.check_moves = function(state){
@@ -198,7 +260,6 @@ Player.prototype.check_moves = function(state){
 	if(state.terrList[this.cT].val >0){
 		movelist.push({"territory":this.cT, "extra":"harvest"})
 	}
-
 
 	for(var i = 0; i< state.terrList[this.cT].neighbors.length;i++){
 		var where = state.terrList[this.cT].neighbors[i];
@@ -224,11 +285,10 @@ Player.prototype.check_moves = function(state){
 //neighbors is list of other Territories you can reach
 function Territory(x,y, nl,val){
 	this.sprite;
+	this.textOb;
 	//shouldnt be undefined, but whatever
 	this.x = typeof x === "undefined" ? 0: x; 
 	this.y = typeof y === "undefined" ? 0: y; 
-
-
 
 	if(typeof val === "undefined"){
 		var rand = Math.random()
@@ -246,12 +306,25 @@ function Territory(x,y, nl,val){
 
 
 
-Territory.prototype.addSprite = function(sprite){
-	this.sprite = sprite;
+Territory.prototype.addSprite = function(){
+	//this.sprite = sprite;
+    this.sprite = game.add.sprite(this.x, this.y, 'circle');
+	this.textOb = game.add.text(this.x-20, this.y+45, "Resources: "+ this.val, style);    
+    this.sprite.width = 45;
+    this.sprite.height = 45;
+
+
+
+}
+
+
+Territory.prototype.updateText = function(){
+	this.textOb.text = "Resources: "+ this.val;
 }
 
 Territory.prototype.applyVal = function(player){
 	player.currency+= this.val--;
+	this.updateText();
 }
 
 
