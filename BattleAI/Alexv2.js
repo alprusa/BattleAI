@@ -102,9 +102,19 @@ gameState.prototype.movePlayers = function(){
 
 gameState.prototype.copy = function(){
 	var temp = new gameState(this.terrList);
+
+
+
 	temp.players = $.extend({}, this.players);
 	temp.terrList = this.terrList.slice();
 	temp.turn = this.turn;
+
+
+
+	temp.gameOver = this.gameOver;
+	temp.winner = this.winner;
+
+	temp.players = {'p1': this.players['p1'].copy() ,'p2': this.players['p2'].copy()};
 	return temp;
 }
 
@@ -229,6 +239,15 @@ function Player(name, beginTer){
 	this.name = name; //player name
 	this.cT = typeof beginTer === "undefined" ? 0: beginTer; //index in gameState's terr list
 	this.sprite;
+}
+
+
+Player.prototype.copy = function(){
+	var temp = new Player(this.name, this.cT);
+	temp.units = this.units;
+	temp.currency = this.currency;
+	return temp;
+
 }
 
 Player.prototype.addSprite = function(){
