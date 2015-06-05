@@ -2,8 +2,10 @@ var game = new Phaser.Game(1200, 800, Phaser.AUTO, 'phaser-example', { preload: 
 
 var locations = [];
 var textArr = [];
+var textStats = [];
 var originalstate;
 var style = { font: '15px Arial', fill: '#CCCCCC', align: 'left', fontWeight: 'bold', stroke: '#2d2d2d', strokeThickness: '2' };
+var style2 = { font: '20px Arial', fill: '#CCCCCC', align: 'left', fontWeight: 'bold' };
 var timer = 0;
 
 
@@ -112,7 +114,6 @@ function drawTerrs(){
     for (var i = 0; i < originalstate.terrList.length; i++) {
         var tempterr = originalstate.terrList[i];
         var temp = game.add.sprite(tempterr.x, tempterr.y, 'circle');
-	
 	var text = game.add.text(tempterr.x-20, tempterr.y+45, "Resources: "+ tempterr.val, style);
 	textArr.push(text);
         originalstate.terrList[i].addSprite(null);
@@ -122,11 +123,26 @@ function drawTerrs(){
         temp.height = 45;
         originalstate.terrList[i].addSprite(temp);
     }
+	sideText();
+}
+
+function sideText(){
+	for (var i = 0; i < 4; i++) {
+		var text;
+		if (i == 0) text = game.add.text(25, 650, "Units: "+ originalstate.players['p1'].units, style2);
+		else if (i == 1) text = game.add.text(25, 690, "Currency: "+ originalstate.players['p1'].currency, style2);
+		else if (i == 2) text = game.add.text(1000, 650, "Units: "+ originalstate.players['p2'].units, style2);
+		else if (i == 3) text = game.add.text(1000, 690, "Currency: "+ originalstate.players['p2'].currency, style2);
+		textStats.push(text);
+	}
 }
 
 function updateText(){
 	for (item in textArr) item.destroy();
+	for (item in textStats) item.destroy();
 	textArr = [];
+	textStats = [];
+	sideText();
 	for (var i = 0; i < originalstate.terrList.length; i++) {
 		var tempterr = originalstate.terrList[i];
 		// 0x66CCFF - blue | 0xFF6666 - red
