@@ -63,13 +63,28 @@ function create() {
 }
 
 
-function doSomething(type){
+function doGeneric(){
 
     //call ai move with this type;
     originalstate.applyMove(choice(originalstate.getMoves()));
     drawTerrs();
     drawPlayers(); 
 }
+
+
+function doSomething(type){
+
+    //call ai move with this type;
+    originalstate.applyMove(  think(originalstate, type) );
+
+
+
+
+
+    drawTerrs();
+    drawPlayers(); 
+}
+
 
 
 
@@ -174,13 +189,16 @@ function drawPlayers(){
 
 
 function actionOnClick1 () {
-    doSomething('type');
+    doGeneric();
+    //doSomething('economic');
 }
 function actionOnClick2 () {
-    doSomething('type');
+    doGeneric();
+    //doSomething('expansional');
 }
 function actionOnClick3 () {
-    doSomething('type');
+    doGeneric();
+    //doSomething('aggressive');
 }
 
 function over1 () { button1.tint = 0x00FF00; }
