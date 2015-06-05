@@ -63,18 +63,7 @@ function create() {
     drawTerrs();
     console.log(originalstate.players['p1'].cT);
     console.log(originalstate.players['p2'].cT);
-    drawPlayers();
-
-    
-
-
-
-
-    //var test = {x: 400, y: 400, location: 0, units: 0, contains: []};
-    //var test2 = {x: 800, y: 400, location: 1, units: 0, contains: []};
-    
-    //locations.push(test);
-    //locations.push(test2);    
+    drawPlayers(); 
 
 }
 
@@ -83,7 +72,8 @@ function drawTerrs(){
     for (var i = 0; i < originalstate.terrList.length; i++) {
         var tempterr = originalstate.terrList[i];
         var temp = game.add.sprite(tempterr.x, tempterr.y, 'circle');
-	var text = game.add.text(tempterr.x-20, tempterr.y+45, "Resources: "+ tempterr.val, style);
+	    var text = game.add.text(tempterr.x-20, tempterr.y+45, "Resources: "+ tempterr.val, style);
+
         originalstate.terrList[i].addSprite(null);
         //this.sprite.inputEnabled = true;
         //this.sprite.input.enableDrag();
