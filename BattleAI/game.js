@@ -3,7 +3,7 @@ var game = new Phaser.Game(1200, 800, Phaser.AUTO, 'phaser-example', { preload: 
 var locations = [];
 var textArr = [];
 var originalstate;
-var style = { font: "15px Arial", fill: "#CCCCCC", align: "left" };
+var style = { font: '15px Arial', fill: '#CCCCCC', align: 'left', fontWeight: 'bold', stroke: '#2d2d2d', strokeThickness: '2' };
 var timer = 0;
 
 
