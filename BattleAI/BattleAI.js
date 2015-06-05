@@ -20,7 +20,7 @@ function Node(state, parent, m){
     this.parent = typeof parent !== null ? parent: null;
     this.who = state.turn;
     this.children = new Object();
-    this.untried_moves = state.get_moves;
+    this.untriedMoves = state.get_moves;
     this.visits = 0;
     this.scoreEconomic = 0.0;
     this.scoreTerritory = 1;
@@ -85,11 +85,11 @@ function lambdaVisits(children, visits){
     return [children, visits][-1];
 }
 
-function choice(untried_moves){
+function choice(untriedMoves){
     var rand = Math.random();
-    rand *= untried_moves.length;
+    rand *= untriedMoves.length;
     rand = Math.floor(rand);
-    return rand;
+    return untriedMoves[rand];
 }
 
 function think(state, desiredType){
@@ -106,14 +106,14 @@ function think(state, desiredType){
         var node = root;
         
         //Select untried moves score difference
-        while(node.untried_moves == null && node.children != null){ //node is fully expanded and non-terminal
+        while(node.untriedMoves == null && node.children != null){ //node is fully expanded and non-terminal
             node = UCTSelectChild(node.children, tempState, c.parent.who, c.visits, c.parent.visits, desiredType);
             node.sort();
             tempState.prototype.applyMove(node.moves);
         }
         
         //Expand untried moves choice
-        if (node.untried_moves != null){ //if we can expand (i.e. state/node is non-terminal)
+        if (node.untriedMoves != null){ //if we can expand (i.e. state/node is non-terminal)
             var m = choice(node.untried_moves);
             tempState.applyMove(m);
             var t = Node(tempState,node,m);
@@ -122,15 +122,15 @@ function think(state, desiredType){
         }
         
         //Rollout get moves - this can often be made orders of magnitude quicker using a state.GetRandomMove() function
-        while (tempState.get_moves() != null){
+        while (tempState.getMoves() != null){
             //hueristic here perhaps to be the choice function
-            tempState.applyMove(choice(tempState.get_moves()));
+            tempState.applyMove(choice(tempState.getMoves()));
         }
                 
         //Backpropagate visits/score backpropagate from the expanded node and work back to the root node
         while (node != None && node.parent != null){
             node.visits += 1;
-            node.totalScore = tempState.get_score()[node.parent.who];
+            node.totalScore = tempState.getScore()[node.parent.who];
             node = node.parent;
         }
         

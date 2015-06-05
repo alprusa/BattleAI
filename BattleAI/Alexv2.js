@@ -1,3 +1,7 @@
+
+
+
+
 var unitCost = 35;
 var maxUnits = 12;
 var minTer = 10;
@@ -25,9 +29,23 @@ var visitTimeLimit = 12;
 function gameState(list){
 
 	this.terrList = typeof list === 'undefined' ? [] : list;
-	this.players = {'p1': new Player('p1') ,'p2': new Player('p2')}
+
+
+	var index1 = Math.round(Math.random()*this.terrList.length-1);
+	do{
+		var index2 = Math.round(Math.random()*this.terrList.length-1);
+
+	}while( index1 == index2);
+
+
+
+	this.players = {'p1': new Player('p1',index1) ,'p2': new Player('p2',index2)}
+
+	
 	this.turn = 'p1';
 }
+
+
 
 gameState.prototype.copy = function(){
 	var temp = new gameState();
@@ -143,6 +161,11 @@ function Player(name, beginTer){
 	this.currency = 15; //how much
 	this.name = name; //player name
 	this.cT = typeof beginTer === "undefined" ? 0: beginTer; //index in gameState's terr list
+	this.sprite;
+}
+
+Player.prototype.addSprite = function(sprite){
+	this.sprite = sprite;
 }
 
 Player.prototype.gainUnits = function(){
@@ -191,23 +214,12 @@ Player.prototype.check_moves = function(state){
 //occupied if someone is currently in this territoty
 //neighbors is list of other Territories you can reach
 function Territory(x,y, nl,val){
-	console.log("got this x" + x + " and this y " + y);
-	this.sprite =  game.add.sprite(x, y, 'circle');
-    //this.sprite.inputEnabled = true;
-    //this.sprite.input.enableDrag();
-    this.sprite.width = 25;
-    this.sprite.height = 25;
-	this.timeLimit = 0;
-
-
-
+	this.sprite;
 	//shouldnt be undefined, but whatever
 	this.x = typeof x === "undefined" ? 0: x; 
 	this.y = typeof y === "undefined" ? 0: y; 
 
 
-	this.sprite.x = this.x;
-	this.sprite.y = this.y;
 
 	if(typeof val === "undefined"){
 		var rand = Math.random()
@@ -221,6 +233,12 @@ function Territory(x,y, nl,val){
 	this.ownedBy = 'none';                                     
 	this.occupied = false;
 	this.neighbors = nl;     
+}
+
+
+
+Territory.prototype.addSprite = function(sprite){
+	this.sprite = sprite;
 }
 
 Territory.prototype.applyVal = function(player){
