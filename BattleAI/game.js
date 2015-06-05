@@ -107,11 +107,10 @@ function updateText(){
 
 
 
-    console.log("here in updateText");
 	for (var i = 0; i < originalstate.terrList.length; i++) {
 		var tempterr = originalstate.terrList[i];
 		// 0x66CCFF - blue | 0xFF6666 - red
-        console.log("here in updateText2");
+
 		switch(tempterr.ownedBy) {
 			case "p1": originalstate.terrList[i].sprite.tint = 0x66CCFF;  break;
 			case "p2": originalstate.terrList[i].sprite.tint = 0xFF6666; break;

@@ -32,14 +32,14 @@ function gameState(list){
 	this.terrList[index2].ownedBy="p2";
 
 
-	this.players = {'p1': new Player('p1',index1) ,'p2': new Player('p2',index2);
+	this.players = {'p1': new Player('p1',index1) ,'p2': new Player('p2',index2)};
 	this.turn = 'p1';
 	this.gameOver = false;
 	this.winner = "none";
 }
 
 
-gameState.prototype.doBattle() =function(){
+gameState.prototype.doBattle =function(){
 	list1 = [];
 	list2 = [];
 
