@@ -95,6 +95,7 @@ function updateText(){
 			case "p2": tempterr.tint(0xFF6666); break;
 			case "none": tempterr.tint(0xFFFFFF); break;
 			default: break;
+		}
 		var text = game.add.text(tempterr.x-20, tempterr.y+45, "Resources: "+ tempterr.val, style);
 		textArr.push(text);
 	}

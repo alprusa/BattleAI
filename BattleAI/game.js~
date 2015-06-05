@@ -72,14 +72,9 @@ function drawTerrs(){
     for (var i = 0; i < originalstate.terrList.length; i++) {
         var tempterr = originalstate.terrList[i];
         var temp = game.add.sprite(tempterr.x, tempterr.y, 'circle');
-<<<<<<< HEAD
 	sprites.push(temp);
 	var text = game.add.text(tempterr.x-20, tempterr.y+45, "Resources: "+ tempterr.val, style);
 	textArr.push(text);
-=======
-	    var text = game.add.text(tempterr.x-20, tempterr.y+45, "Resources: "+ tempterr.val, style);
-	    textArr.push(text);
->>>>>>> bb46f9219ba4dd01257c97daa9e40cb57d0813c3
         originalstate.terrList[i].addSprite(null);
         //this.sprite.inputEnabled = true;
         //this.sprite.input.enableDrag();
