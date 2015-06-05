@@ -62,7 +62,7 @@ function create() {
     drawTerrs();
     console.log(originalstate.players['p1'].cT);
     console.log(originalstate.players['p2'].cT);
-    //drawPlayers();
+    drawPlayers();
 
     
 
@@ -80,7 +80,7 @@ function create() {
 function drawTerrs(){
     //draw country circles
     for (var i = 0; i < originalstate.terrList.length; i++) {
-        var tempterr = originalstate.terrList[i]
+        var tempterr = originalstate.terrList[i];
         var temp = game.add.sprite(tempterr.x, tempterr.y, 'circle');
         originalstate.terrList[i].addSprite(null);
         //this.sprite.inputEnabled = true;
@@ -93,26 +93,30 @@ function drawTerrs(){
 
 
 function drawPlayers(){
-    for( item in originalstate){
-        var player = originalstate[item];
+    var index1 = originalstate.players['p1'].cT;
+
+    var tempterr = originalstate.terrList[index1];
+    var temp = game.add.sprite(tempterr.x, tempterr.y, 'player');
+    originalstate.players['p1'].addSprite(null);
+    //this.sprite.inputEnabled = true;
+    //this.sprite.input.enableDrag();
+    temp.width = 30;
+    temp.height = 30;
+    originalstate.players['p1'].addSprite(temp);
 
 
-        var tempterr = originalstate.terrList[player.cT];
-        var temp = game.add.sprite(tempterr.x, tempterr.y, 'player');
-        originalstate.terrList[i].addSprite(null);
-        //this.sprite.inputEnabled = true;
-        //this.sprite.input.enableDrag();
-        temp.width = 30;
-        temp.height =30;
+    var index2 = originalstate.players['p2'].cT;
+    tempterr = originalstate.terrList[index2];
+    var temp2 = game.add.sprite(tempterr.x, tempterr.y, 'player');
+    originalstate.players['p2'].addSprite(null);
+    //this.sprite.inputEnabled = true;
+    //this.sprite.input.enableDrag();
+    temp2.width = 100;
+    temp2.height = 100;
+    originalstate.players['p2'].addSprite(temp2);
 
 
-        originalstate[item].addSprite(temp);
-        
-
-
-
-
-    }
+    
 
 
 
