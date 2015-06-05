@@ -85,13 +85,6 @@ function lambdaVisits(children, visits){
     return [children, visits][-1];
 }
 
-function choice(untriedMoves){
-    var rand = Math.random();
-    rand *= untriedMoves.length;
-    rand = Math.floor(rand);
-    return untriedMoves[rand];
-}
-
 function think(state, desiredType){
     var root = new Node(state, null, null);
         

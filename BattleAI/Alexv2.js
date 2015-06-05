@@ -31,9 +31,9 @@ function gameState(list){
 	this.terrList = typeof list === 'undefined' ? [] : list;
 
 
-	var index1 = Math.round(Math.random()*this.terrList.length-1);
+	var index1 = Math.round(Math.random()*(this.terrList.length-1));
 	do{
-		var index2 = Math.round(Math.random()*this.terrList.length-1);
+		var index2 = Math.round(Math.random()*(this.terrList.length-1));
 
 	}while( index1 == index2);
 
@@ -41,7 +41,7 @@ function gameState(list){
 
 	this.players = {'p1': new Player('p1',index1) ,'p2': new Player('p2',index2)}
 
-	
+
 	this.turn = 'p1';
 }
 
@@ -58,12 +58,16 @@ gameState.prototype.copy = function(){
 
 
 
-gameState.prototype.applyMove = function(territory,extra){
+gameState.prototype.applyMove = function(move){
+
+	var territory = move['territory'];
+	var extra = move['extra'];
 	//assume the move being applied is possible, as all preconditions are checked in checkMoves
 	var extraInfo = typeof extra !== 'undefined' ? extra : "move";
 	var currPlayer = this.players[this.turn];
 
 	if (extraInfo == "move"){
+		console.log(move);
 		if(this.terrList[territory].occupied){
 			//do battle
 
@@ -125,7 +129,7 @@ gameState.prototype.applyMove = function(territory,extra){
 
 
 
-gameState.prototype.get_moves = function(){
+gameState.prototype.getMoves = function(){
 	return this.players[this.turn].check_moves(this);
 }
 
@@ -196,7 +200,7 @@ Player.prototype.check_moves = function(state){
 		moveList.push({"territory":where, "extra":"move"});
 
 	}
-	return moveList;
+	return movelist;
 }
 
 
