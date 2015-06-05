@@ -1,10 +1,11 @@
-var game = new Phaser.Game(1200, 800, Phaser.AUTO, 'phaser-example', { preload: preload, create: create });
+var game = new Phaser.Game(1200, 800, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: gameLoop});
 
 var locations = [];
 var sprites = [];
 var textArr = [];
 var originalstate;
 var style = { font: "15px Arial", fill: "#CCCCCC", align: "left" };
+var timer = 0;
 
 // 0x66CCFF - blue | 0xFF6666 - red
 
@@ -25,12 +26,13 @@ var button3;
 
 
 function gameLoop(){
-
-
-
-
-
-
+    if (timer%60 == 0){
+        console.log("applying random move");
+        originalstate.applyMove(choice(originalstate.getMoves()));
+    }
+    drawTerrs();
+    drawPlayers(); 
+    updateText();
 
 
 }
@@ -62,8 +64,6 @@ function create() {
         }
     }
     drawTerrs();
-    console.log(originalstate.players['p1'].cT);
-    console.log(originalstate.players['p2'].cT);
     drawPlayers(); 
 
 }
@@ -73,8 +73,8 @@ function drawTerrs(){
     for (var i = 0; i < originalstate.terrList.length; i++) {
         var tempterr = originalstate.terrList[i];
         var temp = game.add.sprite(tempterr.x, tempterr.y, 'circle');
-	var text = game.add.text(tempterr.x-20, tempterr.y+45, "Resources: "+ tempterr.val, style);
-	textArr.push(text);
+	    var text = game.add.text(tempterr.x-20, tempterr.y+45, "Resources: "+ tempterr.val, style);
+	    textArr.push(text);
         originalstate.terrList[i].addSprite(null);
         //this.sprite.inputEnabled = true;
         //this.sprite.input.enableDrag();
@@ -153,6 +153,14 @@ function over3 () { button3.tint = 0x00FF00; }
 function out3 () { button3.tint = 0xFFFFFF; }
 
 
+function choice(list){
+    var rand = Math.random();
+    rand *= list.length;
+    rand = Math.floor(rand);
+    return list[rand];
+}
+
+
 
 
 function setupOurGame(){
@@ -163,23 +171,4 @@ function setupOurGame(){
 }
 
 
-            else if ((pointer.y > (currLocation.contains[i].y)) || i < 3) {
-                if (pointer.x > (currLocation.contains[i].x+(spriteSize/2))) tempPos = i+1;
-            }
-
-        }
-        currLocation.units++;
-        currLocation.contains.splice(tempPos, 0, sprite);
-    }
-    
-    // UPDATE UNIT POSITIONS
-    for (i = 0; i < currLocation.units; i++) {
-        currLocation.contains[i].x = currLocation.x - 40 + ((i%3)*40);
-        currLocation.contains[i].y = currLocation.y - 40 + (Math.floor(i/3)*40);
-    }
-}
-
-function render() {
-
-}
-
+           
