@@ -104,8 +104,7 @@ gameState.prototype.copy = function(){
 	var temp = new gameState(this.terrList);
 
 
-
-	temp.players = $.extend({}, this.players);
+	temp.players = {'p1': this.players['p1'].copy() ,'p2': this.players['p2'].copy()};
 	temp.terrList = this.terrList.slice();
 	temp.turn = this.turn;
 
@@ -114,7 +113,6 @@ gameState.prototype.copy = function(){
 	temp.gameOver = this.gameOver;
 	temp.winner = this.winner;
 
-	temp.players = {'p1': this.players['p1'].copy() ,'p2': this.players['p2'].copy()};
 	return temp;
 }
 
