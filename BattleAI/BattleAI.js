@@ -35,7 +35,7 @@ Node.prototype.getAgentScores = function() {
 function scoreDiff(state,who){
 	var scores = state.getScores;
     var winTotal = 0;
-	if(who == 'p1'){
+	if(who === 'p1'){
         scores["who"][0] - scores["p2"][0] > 0 ? winTotal+=1 : -1;
         scores["who"][1] - scores["p2"][1] > 0 ? winTotal+=1 : -1;
         scores["who"][2] - scores["p2"][2] > 0 ? winTotal+=1 : -1;
@@ -50,7 +50,7 @@ function scoreDiff(state,who){
 
 function idvScoreDiff(scores, index){
     var score = 0;
-    if(who == 'p1'){
+    if(who === 'p1'){
         score = scores["who"][index] - scores["p2"][index];
     }
     else{
@@ -74,15 +74,16 @@ function UCTSelectChild(children, tempState, who, visits, parentVisits, desiredT
             idvScoreDiff(scores, 2);
             break;
         default:
-            return [children, scoreDiff(tempState,who) + Math.sqrt(2*Math.log(parentVisits)/visits)][-1];
+            return [children, scoreDiff(tempState,who) + Math.sqrt(2*Math.log(parentVisits)/visits)];
             break;
     }
     
-    return [children, score + Math.sqrt(2*Math.log(parentVisits)/visits)][-1];
+    return [children, score + Math.sqrt(2*Math.log(parentVisits)/visits)];
 }
 
 function lambdaVisits(children, visits){
-    return [children, visits][-1];
+    console.log(children, visits);
+    return [children, visits];
 }
 
 
@@ -96,19 +97,28 @@ function think(state, desiredType){
     var tempScore = state.getScores;
 
     while(true){
-        var tempState = state;
+        var tempState = state.copy();
+        console.log(typeof tempState);
         var node = root;
         
         //Select untried moves score difference
-        while(node.untriedMoves == null && node.children != null){ //node is fully expanded and non-terminal
+        var i = node.children.length;
+        while(typeof node.untriedMoves === "undefined" && node.children.length-1 > 0){ //node is fully expanded and non-terminal
+            var sortedKeys = Object.keys(node.children).sort();
+            var c = node.children[sortedKeys[i]];
+            console.log(node.children);
             node = UCTSelectChild(node.children, tempState, c.parent.who, c.visits, c.parent.visits, desiredType);
             node.sort();
             tempState.prototype.applyMove(node.moves);
+            i--;
+            node.children.length--;
+            console.log("children length " + node.children.length);
         }
         
         //Expand untried moves choice
-        if (node.untriedMoves != null){ //if we can expand (i.e. state/node is non-terminal)
-            var m = choice(node.untried_moves);
+        if (typeof node.untriedMoves !== "undefined"){ //if we can expand (i.e. state/node is non-terminal)
+            console.log(node.untriedMoves);
+            var m = choice(node.untriedMoves);
             tempState.applyMove(m);
             var t = Node(tempState,node,m);
             node.children[t];
@@ -116,16 +126,19 @@ function think(state, desiredType){
         }
         
         //Rollout get moves - this can often be made orders of magnitude quicker using a state.GetRandomMove() function
-        while (tempState.getMoves() != null){
+        while (tempState.getMoves().length-1 > 0 && typeof tempState.getMoves() !== "undefined"){
             //hueristic here perhaps to be the choice function
             tempState.applyMove(choice(tempState.getMoves()));
+            tempState.getMoves().length--;
         }
                 
         //Backpropagate visits/score backpropagate from the expanded node and work back to the root node
-        while (node != None && node.parent != null){
+        while (typeof node !== "undefined" && node !== null && typeof node.parent !== "undefined" && node.parent !== null){
             node.visits += 1;
-            node.totalScore = tempState.getScore()[node.parent.who];
+            console.log(node.parent.who);
+            node.totalScore = tempState.getScores()[node.parent.who];
             node = node.parent;
+            console.log("parent " + parent);
         }
         
         //set score
@@ -137,7 +150,7 @@ function think(state, desiredType){
         }
     }
    
-    var moves = lambdaVisits(root.children, c.visits).moves;
+    var moves = lambdaVisits(root.children, root.children.visits).moves;
     
     console.log("The moves chosen by " + desiredType + " ai: " + moves);
     

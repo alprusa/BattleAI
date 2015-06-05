@@ -139,20 +139,20 @@ function updateText(){
 
 function actionOnClick1 () {
     if(! originalstate.gameOver){
-        doGeneric();
-        //doSomething('economic');
+        //doGeneric();
+        doSomething('economic');
     }
 }
 function actionOnClick2 () {
     if(! originalstate.gameOver){
-        doGeneric();
-        //doSomething('expansional');
+        //doGeneric();
+        doSomething('expansional');
     }
 }
 function actionOnClick3 () {
     if(! originalstate.gameOver){
-        doGeneric();
-        //doSomething('aggressive');
+        //doGeneric();
+        doSomething('aggressive');
     }
 }
 function over1 () { button1.tint = 0x00FF00; }
