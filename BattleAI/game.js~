@@ -6,7 +6,6 @@ var textArr = [];
 var originalstate;
 var style = { font: "15px Arial", fill: "#CCCCCC", align: "left" };
 
-// 0x66CCFF - blue | 0xFF6666 - red
 
 function preload() {
     setupOurGame()
@@ -73,6 +72,7 @@ function drawTerrs(){
     for (var i = 0; i < originalstate.terrList.length; i++) {
         var tempterr = originalstate.terrList[i];
         var temp = game.add.sprite(tempterr.x, tempterr.y, 'circle');
+	sprites.push(temp);
 	var text = game.add.text(tempterr.x-20, tempterr.y+45, "Resources: "+ tempterr.val, style);
 	textArr.push(text);
         originalstate.terrList[i].addSprite(null);
@@ -85,10 +85,16 @@ function drawTerrs(){
 }
 
 function updateText(){
-	for (item in textArr) game.world.remove(item);
+	for (item in textArr) item.destroy();
 	textArr = [];
 	for (var i = 0; i < originalstate.terrList.length; i++) {
 		var tempterr = originalstate.terrList[i];
+		// 0x66CCFF - blue | 0xFF6666 - red
+		switch(tempterr.ownedBy) {
+			case "p1": tempterr.tint(0x66CCFF); break;
+			case "p2": tempterr.tint(0xFF6666); break;
+			case "none": tempterr.tint(0xFFFFFF); break;
+			default: break;
 		var text = game.add.text(tempterr.x-20, tempterr.y+45, "Resources: "+ tempterr.val, style);
 		textArr.push(text);
 	}
