@@ -25,15 +25,13 @@ var button3;
 
 
 function gameLoop(){
-    if (timer%60 == 0){
-        console.log("applying random move");
-        originalstate.applyMove(choice(originalstate.getMoves()));
+    if (timer%30 == 0 && timer <300){
+        console.log("applying random move at " + timer);
+        console.log(choice(originalstate.getMoves()));
+        drawTerrs();
+        drawPlayers(); 
     }
-    drawTerrs();
-    drawPlayers(); 
-    updateText();
-
-
+    timer++;
 }
 
 function create() {
@@ -100,6 +98,16 @@ function updateText(){
 		textArr.push(text);
 	}
 }
+
+
+
+
+
+
+
+
+
+
 
 function drawPlayers(){
     var index1 = originalstate.players['p1'].cT;

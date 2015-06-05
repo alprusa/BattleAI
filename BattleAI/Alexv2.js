@@ -38,6 +38,10 @@ function gameState(list){
 	}while( index1 == index2);
 
 
+	this.terrList[index1].ownedBy="p1";
+
+	this.terrList[index2].ownedBy="p2";
+
 
 	this.players = {'p1': new Player('p1',index1) ,'p2': new Player('p2',index2)}
 
@@ -61,13 +65,15 @@ gameState.prototype.copy = function(){
 gameState.prototype.applyMove = function(move){
 
 	var territory = move['territory'];
+
 	var extra = move['extra'];
+
 	//assume the move being applied is possible, as all preconditions are checked in checkMoves
 	var extraInfo = typeof extra !== 'undefined' ? extra : "move";
 	var currPlayer = this.players[this.turn];
 
 	if (extraInfo == "move"){
-		console.log(move);
+		console.log("our move is" + move);
 		if(this.terrList[territory].occupied){
 			//do battle
 
@@ -98,23 +104,22 @@ gameState.prototype.applyMove = function(move){
 		}
 
 	}else{
-
 		if(extraInfo == "recruit"){
 			currPlayer.gainUnits();
 			
 		}else if(extraInfo == "harvest"){
-			this.terrList[currPlayer.cT].applyval(currPlayer);
+			this.terrList[currPlayer.cT].applyVal(currPlayer);
 			
 		}else if(extraInfo == "switch"){
-			this.terrList[currPlayer.cT].applyval(currPlayer);
+			this.terrList[currPlayer.cT].applyVal(currPlayer);
 			
 		}
 		this.turn = this.turn != 'p1' ? "p2" : "p1";
 
 
-		for(var i = 0; i< this.terrList.length(); i++){
+		for(var i = 0; i< this.terrList.length; i++){
 			if(this.terrList[i].ownedBy != 'none'){
-				if(this.players[0].cT!= i || this.players[1].ct!= i){
+				if(this.players["p1"].cT!= i || this.players["p2"].ct!= i){
 					this.timeLimit++;
 
 				}
@@ -184,14 +189,14 @@ Player.prototype.check_moves = function(state){
 	var moveList = [];
 
 	if(this.currency>=unitCost){
-		moveList.push({"territory":this.ct, "extra":"recruit"});
+		movelist.push({"territory":this.cT, "extra":"recruit"})
 	}
 	if(state.terrList[this.cT].ownedBy != this.name){
-		moveList.push({"territory":this.ct, "extra":"switch"});
+		movelist.push({"territory":this.cT, "extra":"switch"})
 	}
 
 	if(state.terrList[this.cT].val >0){
-		moveList.push({"territory":this.ct, "extra":"harvest"});
+		movelist.push({"territory":this.cT, "extra":"harvest"})
 	}
 
 
