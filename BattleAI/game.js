@@ -1,7 +1,6 @@
 var game = new Phaser.Game(1200, 800, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: gameLoop});
 
 var locations = [];
-var sprites = [];
 var textArr = [];
 var originalstate;
 var style = { font: "15px Arial", fill: "#CCCCCC", align: "left" };
@@ -25,11 +24,9 @@ var button3;
 
 
 function gameLoop(){
-    if (timer%30 == 0 && timer <300){
-        console.log("applying random move at " + timer);
-        console.log(choice(originalstate.getMoves()));
-        drawTerrs();
-        drawPlayers(); 
+    if (timer%30 == 0){
+        
+        
     }
     timer++;
 }
@@ -65,12 +62,42 @@ function create() {
 
 }
 
+
+function doSomething(type){
+
+    //call ai move with this type;
+    originalstate.applyMove(choice(originalstate.getMoves()));
+    drawTerrs();
+    drawPlayers(); 
+}
+
+
+
+
+function createTerrs(){
+    //draw country circles
+    for (var i = 0; i < originalstate.terrList.length; i++) {
+        var tempterr = originalstate.terrList[i];
+        var temp = game.add.sprite(tempterr.x, tempterr.y, 'circle');
+        var text = game.add.text(tempterr.x-20, tempterr.y+45, "Resources: "+ tempterr.val, style);
+        textArr.push(text);
+        originalstate.terrList[i].addSprite(null);
+        //this.sprite.inputEnabled = true;
+        //this.sprite.input.enableDrag();
+        temp.width = 45;
+        temp.height = 45;
+        originalstate.terrList[i].addSprite(temp);
+    }
+}
+
+
+
 function drawTerrs(){
     //draw country circles
     for (var i = 0; i < originalstate.terrList.length; i++) {
         var tempterr = originalstate.terrList[i];
         var temp = game.add.sprite(tempterr.x, tempterr.y, 'circle');
-	sprites.push(temp);
+	
 	var text = game.add.text(tempterr.x-20, tempterr.y+45, "Resources: "+ tempterr.val, style);
 	textArr.push(text);
         originalstate.terrList[i].addSprite(null);
@@ -108,7 +135,6 @@ function updateText(){
 
 
 
-
 function drawPlayers(){
     var index1 = originalstate.players['p1'].cT;
 
@@ -117,8 +143,8 @@ function drawPlayers(){
     originalstate.players['p1'].addSprite(null);
     //this.sprite.inputEnabled = true;
     //this.sprite.input.enableDrag();
-    temp.width = 30;
-    temp.height = 30;
+    temp.width = 100;
+    temp.height = 100;
     originalstate.players['p1'].addSprite(temp);
 
 
@@ -148,13 +174,13 @@ function drawPlayers(){
 
 
 function actionOnClick1 () {
-    console.log("test");
+    doSomething('type');
 }
 function actionOnClick2 () {
-    console.log("test2");
+    doSomething('type');
 }
 function actionOnClick3 () {
-    console.log("test3");
+    doSomething('type');
 }
 
 function over1 () { button1.tint = 0x00FF00; }
@@ -166,9 +192,7 @@ function out3 () { button3.tint = 0xFFFFFF; }
 
 
 function choice(list){
-    var rand = Math.random();
-    rand *= list.length;
-    rand = Math.floor(rand);
+    var rand = Math.floor(Math.random()*list.length);
     return list[rand];
 }
 

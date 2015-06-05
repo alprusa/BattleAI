@@ -73,7 +73,7 @@ gameState.prototype.applyMove = function(move){
 	var currPlayer = this.players[this.turn];
 
 	if (extraInfo == "move"){
-		console.log("our move is" + move);
+	
 		if(this.terrList[territory].occupied){
 			//do battle
 
@@ -114,20 +114,20 @@ gameState.prototype.applyMove = function(move){
 			this.terrList[currPlayer.cT].applyVal(currPlayer);
 			
 		}
-		this.turn = this.turn != 'p1' ? "p2" : "p1";
-
-
-		for(var i = 0; i< this.terrList.length; i++){
-			if(this.terrList[i].ownedBy != 'none'){
-				if(this.players["p1"].cT!= i || this.players["p2"].ct!= i){
-					this.timeLimit++;
-
-				}
-			}
-
-
-		}
 	}
+	for(var i = 0; i< this.terrList.length; i++){
+		if(this.terrList[i].ownedBy != 'none'){
+			if(this.players["p1"].cT!= i || this.players["p2"].ct!= i){
+				this.timeLimit++;
+
+			}
+		}
+
+
+	}
+	this.turn = this.turn != 'p1' ? "p1" : "p2";
+	
+
 }
 
 
@@ -186,7 +186,7 @@ Player.prototype.gainUnits = function(){
 
 
 Player.prototype.check_moves = function(state){
-	var moveList = [];
+	var movelist = [];
 
 	if(this.currency>=unitCost){
 		movelist.push({"territory":this.cT, "extra":"recruit"})
@@ -200,9 +200,9 @@ Player.prototype.check_moves = function(state){
 	}
 
 
-	for(var i = 0; i< state.terrList[this.cT].neighbors.list;i++){
+	for(var i = 0; i< state.terrList[this.cT].neighbors.length;i++){
 		var where = state.terrList[this.cT].neighbors[i];
-		moveList.push({"territory":where, "extra":"move"});
+		movelist.push({"territory":where, "extra":"move"});
 
 	}
 	return movelist;
