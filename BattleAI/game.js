@@ -49,7 +49,9 @@ function create() {
     //var test2 = {x: 800, y: 400, location: 1, units: 0, contains: []};
     
     //locations.push(test);
-    //locations.push(test2);    
+    //locations.push(test2);
+    
+   // think(originalstate, "economic");
 
 }
 

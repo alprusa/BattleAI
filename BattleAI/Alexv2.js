@@ -154,23 +154,23 @@ Player.prototype.gainUnits = function(){
 
 
 Player.prototype.check_moves = function(state){
-	var movelist = []
+	var moveList = [];
 
 	if(this.currency>=unitCost){
-		moveList.push({"territory":this.ct, "extra":"recruit"})
+		moveList.push({"territory":this.ct, "extra":"recruit"});
 	}
 	if(state.terrList[this.cT].ownedBy != this.name){
-		moveList.push({"territory":this.ct, "extra":"switch"})
+		moveList.push({"territory":this.ct, "extra":"switch"});
 	}
 
 	if(state.terrList[this.cT].val >0){
-		moveList.push({"territory":this.ct, "extra":"harvest"})
+		moveList.push({"territory":this.ct, "extra":"harvest"});
 	}
 
 
 	for(var i = 0; i< state.terrList[this.cT].neighbors.list;i++){
 		var where = state.terrList[this.cT].neighbors[i];
-		moveList.push({"territory":where, "extra":"move"})
+		moveList.push({"territory":where, "extra":"move"});
 
 	}
 	return moveList;

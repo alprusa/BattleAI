@@ -14,9 +14,10 @@
 var THINK_DURATION = 1;
 //fixed conversion from python to javascript for extra parameters, ie switched parent = None
 //to proper syntax
-function node(self, state, parent, m){
-    this.moves = m = typeof m !== 'undefined' ? m : null;
-    this.parent = parent = typeof parent !== 'undefined' ? parent: null;;
+
+function Node(state, parent, m){
+    this.moves = m = typeof m !== null ? m : null;
+    this.parent = typeof parent !== null ? parent: null;
     this.who = state.turn;
     this.children = new Object();
     this.untried_moves = state.get_moves;
@@ -27,7 +28,7 @@ function node(self, state, parent, m){
     this.totalScore = [];
 }
 
-node.prototype.getAgentScores = function() {
+Node.prototype.getAgentScores = function() {
     return [this.scoreEconomic, this.scoreTerritory, this.scoreUnits];
 };
 
@@ -92,7 +93,7 @@ function choice(untried_moves){
 }
 
 function think(state, desiredType){
-    var root = node(state);
+    var root = new Node(state, null, null);
         
     var startTime = new Date().getTime() / 1000;
     var endTime = startTime + THINK_DURATION;
@@ -101,14 +102,14 @@ function think(state, desiredType){
     var tempScore = state.getScores;
 
     while(true){
-        var tempState = state.copy;
+        var tempState = state;
         var node = root;
         
         //Select untried moves score difference
         while(node.untried_moves == null && node.children != null){ //node is fully expanded and non-terminal
             node = UCTSelectChild(node.children, tempState, c.parent.who, c.visits, c.parent.visits, desiredType);
             node.sort();
-            tempState.applyMove(node.moves);
+            tempState.prototype.applyMove(node.moves);
         }
         
         //Expand untried moves choice
@@ -116,7 +117,7 @@ function think(state, desiredType){
             var m = choice(node.untried_moves);
             tempState.applyMove(m);
             var t = Node(tempState,node,m);
-            node.children.append(t);
+            node.children[t];
             node = t;
         }
         
