@@ -48,7 +48,8 @@ function create() {
         }
     }
 
-
+	var text = game.add.text(25, 610, "Player 1", style2);
+	var text2 = game.add.text(1000, 610, "Player 2", style2);
 
     createTerrs();
     originalstate.setupPlayers();
@@ -106,10 +107,10 @@ function drawTerrs(){
 function sideText(){
 	for (var i = 0; i < 4; i++) {
 		var text;
-		if (i == 0) text = game.add.text(25, 650, "Units: "+ originalstate.players['p1'].units, style2);
-		else if (i == 1) text = game.add.text(25, 690, "Currency: "+ originalstate.players['p1'].currency, style2);
-		else if (i == 2) text = game.add.text(1000, 650, "Units: "+ originalstate.players['p2'].units, style2);
-		else if (i == 3) text = game.add.text(1000, 690, "Currency: "+ originalstate.players['p2'].currency, style2);
+		if (i == 0) text = game.add.text(45, 650, "Units: "+ originalstate.players['p1'].units, style2);
+		else if (i == 1) text = game.add.text(45, 690, "Currency: "+ originalstate.players['p1'].currency, style2);
+		else if (i == 2) text = game.add.text(1020, 650, "Units: "+ originalstate.players['p2'].units, style2);
+		else if (i == 3) text = game.add.text(1020, 690, "Currency: "+ originalstate.players['p2'].currency, style2);
 		textStats.push(text);
 	}
 }
