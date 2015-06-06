@@ -98,12 +98,11 @@ function think(state, desiredType){
 
     while(true){
         var tempState = state.copy();
-        console.log(typeof tempState);
         var node = root;
         
         //Select untried moves score difference
         var i = node.children.length;
-        while(typeof node.untriedMoves === "undefined" && node.children.length-1 > 0){ //node is fully expanded and non-terminal
+        while(typeof node.untriedMoves === 'undefined' && node.children.length-1 > 0){ //node is fully expanded and non-terminal
             var sortedKeys = Object.keys(node.children).sort();
             var c = node.children[sortedKeys[i]];
             console.log(node.children);
@@ -116,27 +115,27 @@ function think(state, desiredType){
         }
         
         //Expand untried moves choice
-        if (typeof node.untriedMoves !== "undefined"){ //if we can expand (i.e. state/node is non-terminal)
+        if (typeof node.untriedMoves !== 'undefined'){ //if we can expand (i.e. state/node is non-terminal)
             console.log(node.untriedMoves);
             var m = choice(node.untriedMoves);
-            tempState.applyMove(m[0]);
+            tempState.applyMove(m);
             var t = Node(tempState,node,m);
             node.children[t];
             node = t;
         }
         
         //Rollout get moves - this can often be made orders of magnitude quicker using a state.GetRandomMove() function
-        while (tempState.getMoves().length-1 > 0 && typeof tempState.getMoves() !== "undefined"){
+        while (typeof node.totalScore[0] !== 'undefined' && node.totalScore[0] < 500 && node.totalScore[1] < 12 && node.totalScore[2] > 0){
             //hueristic here perhaps to be the choice function
             tempState.applyMove(choice(tempState.getMoves()));
             tempState.getMoves().length--;
         }
                 
         //Backpropagate visits/score backpropagate from the expanded node and work back to the root node
-        while (typeof node !== "undefined" && node != null && typeof node.parent !== "undefined" && node.parent != null){
+        while (typeof node !== 'undefined' && node != null && typeof node.parent !== 'undefined' && node.parent != null){
             node.visits += 1;
-            console.log(node.parent.who);
-            node.totalScore = tempState.getScores()[node.parent.who];
+            console.log(node.who);
+            node.totalScore = tempState.getScores()[node.who];
             node = node.parent;
             console.log("parent " + parent);
         }
@@ -146,6 +145,7 @@ function think(state, desiredType){
         
         currTime = new Date().getTime() / 1000;
         if (currTime > endTime){
+            root = node;
             break;
         }
     }
