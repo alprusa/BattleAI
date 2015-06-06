@@ -1,4 +1,4 @@
-var style = { font: "15px Arial", fill: "#CCCCCC", align: "left" };
+var style = { font: '15px Arial', fill: '#CCCCCC', align: 'left', fontWeight: 'bold', stroke: '#2d2d2d', strokeThickness: '2' };
 var unitCost = 35;
 var maxUnits = 12;
 var minTer = 10;
@@ -22,7 +22,7 @@ var visitTimeLimit = 12;
 
 function gameState(list){
 
-
+	this.moveApplied = {"territory":0, "extra":"harvest"};
 	this.terrList = typeof list === 'undefined' ? [] : list;
 	var index1 = Math.round(Math.random()*(this.terrList.length-1));
 	do{
@@ -42,18 +42,24 @@ function gameState(list){
 
 
 gameState.prototype.doBattle =function(){
+
+	console.log("battle");
 	list1 = [];
 	list2 = [];
 
 	for(var i = 0; i<this.players['p1'].units; ++i){
-		list1.push(Math.floor(Math.random()*3))
+		list1.push(Math.floor(Math.random()*6))
 	}
 
 	for(var i = 0; i<this.players['p2'].units; ++i){
-		list2.push(Math.floor(Math.random()*3))
+		list2.push(Math.floor(Math.random()*6))
 	}
-	list1.sort();
-	list2.sort();
+
+
+	list1.sort().reverse();
+	list2.sort().reverse();
+
+
 	var len = list1.length<list2.length ? list1.length :list2.length;
 
 	for(var i = 0; i<len; i++){
@@ -68,7 +74,6 @@ gameState.prototype.doBattle =function(){
 	}
 
 	if(this.players['p1'].units == 0 && this.players['p2'].units == 0){
-		console.log("wow everyone is dead now, you both lose");
 		this.gameOver = true;
 	}else if(this.players['p1'].units == 0){
 		this.winner = "p2";
@@ -76,6 +81,7 @@ gameState.prototype.doBattle =function(){
 		
 	}else if(this.players['p2'].units == 0){
 		this.winner = "p1";
+
 		this.gameOver = true;
 		
 	}
@@ -93,11 +99,11 @@ gameState.prototype.setupPlayers = function(){
 gameState.prototype.movePlayers = function(){
 	var index1 = this.players['p1'].cT
 	var index2 = this.players['p2'].cT
-	this.players['p1'].sprite.x = this.terrList[index1].sprite.x;
-	this.players['p1'].sprite.y = this.terrList[index1].sprite.y;
+	this.players['p1'].x = this.terrList[index1].x;
+	this.players['p1'].y = this.terrList[index1].y;
 
-	this.players['p2'].sprite.x = this.terrList[index2].sprite.x;
-	this.players['p2'].sprite.y = this.terrList[index2].sprite.y;
+	this.players['p2'].x = this.terrList[index2].x;
+	this.players['p2'].y = this.terrList[index2].y;
 
 }
 
@@ -117,6 +123,12 @@ gameState.prototype.copy = function(){
 
 	return temp;
 }
+gameState.prototype.updateSprites = function(){
+	this.players['p1'].sprite.x=this.players['p1'].x;
+	this.players['p1'].sprite.y=this.players['p1'].y;
+	this.players['p2'].sprite.x=this.players['p2'].x;
+	this.players['p2'].sprite.y=this.players['p2'].y;
+}
 
 
 
@@ -125,10 +137,6 @@ gameState.prototype.copy = function(){
 
 
 gameState.prototype.applyMove = function(move){
-	console.log("we are in applyMove with " +move["territory"] + " and " + move["extra"]) ;
-
-	console.log("out current state " + this);
-	console.log("our players are" + this.players["p1"].name + " and ");
 
 	var territory = move['territory'];
 	var extra = move['extra'];
@@ -140,7 +148,7 @@ gameState.prototype.applyMove = function(move){
 	if (extraInfo == "move"){
 	
 		if(this.terrList[territory].occupied){
-			console.log("battle!!!!");
+
 			this.doBattle()
 
 
@@ -243,6 +251,8 @@ function Player(name, beginTer){
 	this.name = name; //player name
 	this.cT = typeof beginTer === "undefined" ? 0: beginTer; //index in gameState's terr list
 	this.sprite;
+	this.x = 0;
+	this.y = 0;
 }
 
 
@@ -258,7 +268,8 @@ Player.prototype.addSprite = function(){
 
 	var x = originalstate.terrList[this.cT].sprite.x;
 	var y = originalstate.terrList[this.cT].sprite.y;
-	
+	this.x=x;
+	this.y=y;
 	this.sprite = game.add.sprite(x, y, 'player');
     this.sprite.width = 100;
     this.sprite.height = 100;
