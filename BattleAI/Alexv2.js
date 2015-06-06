@@ -21,6 +21,8 @@ var visitTimeLimit = 12;
 
 
 function gameState(list){
+
+
 	this.terrList = typeof list === 'undefined' ? [] : list;
 	var index1 = Math.round(Math.random()*(this.terrList.length-1));
 	do{
@@ -102,9 +104,17 @@ gameState.prototype.movePlayers = function(){
 
 gameState.prototype.copy = function(){
 	var temp = new gameState(this.terrList);
-	temp.players = $.extend({}, this.players);
+
+
+	temp.players = {'p1': this.players['p1'].copy() ,'p2': this.players['p2'].copy()};
 	temp.terrList = this.terrList.slice();
 	temp.turn = this.turn;
+
+
+
+	temp.gameOver = this.gameOver;
+	temp.winner = this.winner;
+
 	return temp;
 }
 
@@ -115,6 +125,10 @@ gameState.prototype.copy = function(){
 
 
 gameState.prototype.applyMove = function(move){
+	console.log("we are in applyMove with " +move["territory"] + " and " + move["extra"]) ;
+
+	console.log("out current state " + this);
+	console.log("our players are" + this.players["p1"].name + " and ");
 
 	var territory = move['territory'];
 	var extra = move['extra'];
@@ -229,6 +243,15 @@ function Player(name, beginTer){
 	this.name = name; //player name
 	this.cT = typeof beginTer === "undefined" ? 0: beginTer; //index in gameState's terr list
 	this.sprite;
+}
+
+
+Player.prototype.copy = function(){
+	var temp = new Player(this.name, this.cT);
+	temp.units = this.units;
+	temp.currency = this.currency;
+	return temp;
+
 }
 
 Player.prototype.addSprite = function(){
