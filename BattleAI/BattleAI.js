@@ -35,7 +35,7 @@ Node.prototype.getAgentScores = function() {
 function scoreDiff(state,who){
 	var scores = state.getScores;
     var winTotal = 0;
-	if(who === 'p1'){
+	if(who == 'p1'){
         scores["who"][0] - scores["p2"][0] > 0 ? winTotal+=1 : -1;
         scores["who"][1] - scores["p2"][1] > 0 ? winTotal+=1 : -1;
         scores["who"][2] - scores["p2"][2] > 0 ? winTotal+=1 : -1;
@@ -50,7 +50,7 @@ function scoreDiff(state,who){
 
 function idvScoreDiff(scores, index){
     var score = 0;
-    if(who === 'p1'){
+    if(who == 'p1'){
         score = scores["who"][index] - scores["p2"][index];
     }
     else{
@@ -88,7 +88,7 @@ function lambdaVisits(children, visits){
 
 
 function think(state, desiredType){
-    var root = new Node(state, null, null);
+    var root = new Node(state, state, state.terrList[0]);
         
     var startTime = new Date().getTime() / 1000;
     var endTime = startTime + THINK_DURATION;
@@ -109,7 +109,7 @@ function think(state, desiredType){
             console.log(node.children);
             node = UCTSelectChild(node.children, tempState, c.parent.who, c.visits, c.parent.visits, desiredType);
             node.sort();
-            tempState.prototype.applyMove(node.moves);
+            tempState.applyMove(node.moves[0]);
             i--;
             node.children.length--;
             console.log("children length " + node.children.length);
@@ -119,7 +119,7 @@ function think(state, desiredType){
         if (typeof node.untriedMoves !== "undefined"){ //if we can expand (i.e. state/node is non-terminal)
             console.log(node.untriedMoves);
             var m = choice(node.untriedMoves);
-            tempState.applyMove(m);
+            tempState.applyMove(m[0]);
             var t = Node(tempState,node,m);
             node.children[t];
             node = t;
@@ -133,7 +133,7 @@ function think(state, desiredType){
         }
                 
         //Backpropagate visits/score backpropagate from the expanded node and work back to the root node
-        while (typeof node !== "undefined" && node !== null && typeof node.parent !== "undefined" && node.parent !== null){
+        while (typeof node !== "undefined" && node != null && typeof node.parent !== "undefined" && node.parent != null){
             node.visits += 1;
             console.log(node.parent.who);
             node.totalScore = tempState.getScores()[node.parent.who];
