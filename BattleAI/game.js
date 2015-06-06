@@ -120,6 +120,7 @@ function sideText(){
 function doGeneric(){
     originalstate.applyMove(choice(originalstate.getMoves()));
     updateText()  
+    originalstate.updateSprites();
 }
 
 
@@ -129,6 +130,8 @@ function doSomething(type){
     console.log("first move of think for " +type+" is " + think(originalstate, type)[0]);
     //originalstate.applyMove(  think(originalstate, type)[0] );
     updateText()
+
+    originalstate.updateSprites();
 }
 
 
@@ -167,7 +170,7 @@ function updateText(){
 
 
 
-var testing = false;
+var testing = true;
 
 
 
@@ -178,6 +181,7 @@ var testing = false;
 
 
 function actionOnClick1 () {
+    console.log("pressed economic");
     if(! originalstate.gameOver){
         if(testing){
             doGeneric();
