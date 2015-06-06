@@ -45,9 +45,6 @@ function create() {
             g.lineTo(otherterr.x+20, otherterr.y+20);
         }
     }
-
-
-
     createTerrs();
     originalstate.setupPlayers();
     updateText();
@@ -59,7 +56,7 @@ function create() {
 
 
 function gameLoop(){
-    if (timer%30 == 0 && originalstate.gameOver == true){
+    if (timer%30 == 0 && originalstate.gameOver){
         console.log("the winner is " + originalstate.winner);
 
     }
@@ -94,13 +91,8 @@ function doGeneric(){
     updateText()  
 }
 
-
-
 function doSomething(type){
-    console.log("result of think is " + think(originalstate, type));
-    console.log("first move of think for " +type+" is " + think(originalstate, type)[0]);
-    //originalstate.applyMove(  think(originalstate, type)[0] );
-    updateText()
+    originalstate.applyMove(  think(originalstate, type) );
 }
 
 
@@ -135,7 +127,7 @@ function updateText(){
 
 
 
-var testing = false;
+
 
 
 
@@ -147,37 +139,22 @@ var testing = false;
 
 function actionOnClick1 () {
     if(! originalstate.gameOver){
-        if(testing){
-            doGeneric();
-        }else{
-            doSomething('economic');
-        }
+        doGeneric();
+        //doSomething('economic');
     }
 }
-
-
-
-function actionOnClick2() {
+function actionOnClick2 () {
     if(! originalstate.gameOver){
-        if(testing){
-            doGeneric();
-        }else{
-            doSomething('expansional');
-        }
+        doGeneric();
+        //doSomething('expansional');
     }
 }
-
-
-function actionOnClick3() {
+function actionOnClick3 () {
     if(! originalstate.gameOver){
-        if(testing){
-            doGeneric();
-        }else{
-            doSomething('aggressive');
-        }
+        doGeneric();
+        //doSomething('aggressive');
     }
 }
-
 function over1 () { button1.tint = 0x00FF00; }
 function out1 () { button1.tint = 0xFFFFFF; }
 function over2 () { button2.tint = 0x00FF00; }
