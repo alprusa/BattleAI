@@ -20,7 +20,7 @@ function Node(state, parent, m){
     this.parent = typeof parent !== null ? parent: null;
     this.who = state.turn;
     this.children = new Object();
-    this.untriedMoves = state.get_moves;
+    this.untriedMoves = state.getMoves();
     this.visits = 0;
     this.scoreEconomic = 0.0;
     this.scoreTerritory = 1;
@@ -65,25 +65,24 @@ function UCTSelectChild(children, tempState, who, visits, parentVisits, desiredT
     var score = 0;
     switch(desiredType){ 
         case "economic":
-            idvScoreDiff(scores, 0);
+            score = idvScoreDiff(scores, 0);
             break;
-        case "expantional":
-            idvScoreDiff(scores, 1);
+        case "expansional":
+            score = idvScoreDiff(scores, 1);
             break;
         case "aggressive":
-            idvScoreDiff(scores, 2);
+            score = idvScoreDiff(scores, 2);
             break;
         default:
             return [children, scoreDiff(tempState,who) + Math.sqrt(2*Math.log(parentVisits)/visits)];
             break;
     }
     
-    return [children, score + Math.sqrt(2*Math.log(parentVisits)/visits)];
+    return (children, score + Math.sqrt(2*Math.log(parentVisits)/visits)).sort(function(score){return score;});
 }
 
 function lambdaVisits(children, visits){
-    console.log(children, visits);
-    return [children, visits];
+    return children["move"];
 }
 
 
@@ -95,14 +94,15 @@ function think(state, desiredType){
     var currTime = 0.0;
       
     var tempScore = state.getScores;
+    var i = 0;
 
     while(true){
         var tempState = state.copy();
         var node = root;
-        
+        console.log(node);
         //Select untried moves score difference
         var i = node.children.length;
-        while(typeof node.untriedMoves === 'undefined' && node.children.length-1 > 0){ //node is fully expanded and non-terminal
+        while(typeof node.untriedMoves === 'undefined' && node.children.length > 0){ //node is fully expanded and non-terminal
             var sortedKeys = Object.keys(node.children).sort();
             var c = node.children[sortedKeys[i]];
             console.log(node.children);
@@ -115,27 +115,31 @@ function think(state, desiredType){
         }
         
         //Expand untried moves choice
+        console.log(node.untriedMoves);
         if (typeof node.untriedMoves !== 'undefined'){ //if we can expand (i.e. state/node is non-terminal)
             console.log(node.untriedMoves);
             var m = choice(node.untriedMoves);
             tempState.applyMove(m);
-            var t = Node(tempState,node,m);
-            node.children[t];
+            var t = new Node(tempState,node,m);
+            node.children[i] = t;
             node = t;
+            i++;
         }
         
         //Rollout get moves - this can often be made orders of magnitude quicker using a state.GetRandomMove() function
         while (typeof node.totalScore[0] !== 'undefined' && node.totalScore[0] < 500 && node.totalScore[1] < 12 && node.totalScore[2] > 0){
             //hueristic here perhaps to be the choice function
+            console.log(node.totalScore);
             tempState.applyMove(choice(tempState.getMoves()));
             tempState.getMoves().length--;
         }
                 
+                
         //Backpropagate visits/score backpropagate from the expanded node and work back to the root node
         while (typeof node !== 'undefined' && node != null && typeof node.parent !== 'undefined' && node.parent != null){
             node.visits += 1;
-            console.log(node.who);
-            node.totalScore = tempState.getScores()[node.who];
+            console.log(node.parent.who);
+            node.totalScore = tempState.getScores()[node.parent.who];
             node = node.parent;
             console.log("parent " + parent);
         }
@@ -149,10 +153,12 @@ function think(state, desiredType){
             break;
         }
     }
-   
-    var moves = lambdaVisits(root.children, root.children.visits).moves;
+   console.log(root.children);
+   console.log(root.children.visits);
+    var moves = lambdaVisits(root.children, root.children.visits);
     
     console.log("The moves chosen by " + desiredType + " ai: " + moves);
+    console.log(moves);
     
-    return moves.sort(); //return the move that was most visited
+    return moves.sort()[0]; //return the move that was most visited
 }

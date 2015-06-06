@@ -127,7 +127,7 @@ function doGeneric(){
 
 function doSomething(type){
     console.log("result of think is " + think(originalstate, type));
-    console.log("first move of think for " +type+" is " + think(originalstate, type)[0]);
+    console.log("first move of think for " +type+" is " + think(originalstate, type));
     //originalstate.applyMove(  think(originalstate, type)[0] );
     updateText()
 

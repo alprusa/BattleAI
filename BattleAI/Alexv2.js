@@ -217,19 +217,25 @@ gameState.prototype.getMoves = function(){
 }
 
 gameState.prototype.getScores= function(){
-	var temp = {}
+	var temp = {"p1":[],"p2":[]};
 
 
 	for(var i = 0; i< 2; i++){
-		temp[i].key = this.players[i].key
+		var key;
+        if(i==0){
+            key = "p1";
+        }else{
+            key = "p2";
+        }
+		
 
 		var controlled;
 		for(var j = 0; j< this.terrList.length; j++){
-			if(this.terrList[j].ownedBy == this.players[i].key){
-				controlled++
+			if(this.terrList[j].ownedBy == key){
+				controlled++;
 			}
 		}
-		temp[i].value = [ this.players[i].value.currency , controlled, this.players[i].value.units];
+		temp[key] = [ this.players[key].currency , controlled, this.players[key].units];
 	}
 
 	return temp;
