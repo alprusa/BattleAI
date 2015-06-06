@@ -21,6 +21,8 @@ var visitTimeLimit = 12;
 
 
 function gameState(list){
+
+
 	this.terrList = typeof list === 'undefined' ? [] : list;
 	var index1 = Math.round(Math.random()*(this.terrList.length-1));
 	do{
@@ -123,6 +125,10 @@ gameState.prototype.copy = function(){
 
 
 gameState.prototype.applyMove = function(move){
+	console.log("we are in applyMove with " +move["territory"] + " and " + move["extra"]) ;
+
+	console.log("out current state " + this);
+	console.log("our players are" + this.players["p1"].name + " and ");
 
 	var territory = move['territory'];
 	var extra = move['extra'];

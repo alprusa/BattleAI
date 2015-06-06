@@ -4,8 +4,10 @@ var button1;
 var button2;
 var button3;
 var textArr = [];
+var textStats = [];
 var originalstate;
 var style = { font: '15px Arial', fill: '#CCCCCC', align: 'left', fontWeight: 'bold', stroke: '#2d2d2d', strokeThickness: '2' };
+var style2 = { font: '20px Arial', fill: '#CCCCCC', align: 'left', fontWeight: 'bold' };
 var timer = 0;
 
 
@@ -45,6 +47,10 @@ function create() {
             g.lineTo(otherterr.x+20, otherterr.y+20);
         }
     }
+
+	var text = game.add.text(25, 610, "Player 1", style2);
+	var text2 = game.add.text(1000, 610, "Player 2", style2);
+
     createTerrs();
     originalstate.setupPlayers();
     updateText();
@@ -56,7 +62,7 @@ function create() {
 
 
 function gameLoop(){
-    if (timer%30 == 0 && originalstate.gameOver){
+    if (timer%30 == 0 && originalstate.gameOver == true){
         console.log("the winner is " + originalstate.winner);
 
     }
@@ -81,8 +87,33 @@ function createPlayers(){
 }
 
 
+function drawTerrs(){
+    //draw country circles
+    for (var i = 0; i < originalstate.terrList.length; i++) {
+        var tempterr = originalstate.terrList[i];
+        var temp = game.add.sprite(tempterr.x, tempterr.y, 'circle');
+	var text = game.add.text(tempterr.x-20, tempterr.y+45, "Resources: "+ tempterr.val, style);
+	textArr.push(text);
+        originalstate.terrList[i].addSprite(null);
+        //this.sprite.inputEnabled = true;
+        //this.sprite.input.enableDrag();
+        temp.width = 45;
+        temp.height = 45;
+        originalstate.terrList[i].addSprite(temp);
+    }
+	sideText();
+}
 
-
+function sideText(){
+	for (var i = 0; i < 4; i++) {
+		var text;
+		if (i == 0) text = game.add.text(45, 650, "Units: "+ originalstate.players['p1'].units, style2);
+		else if (i == 1) text = game.add.text(45, 690, "Currency: "+ originalstate.players['p1'].currency, style2);
+		else if (i == 2) text = game.add.text(1020, 650, "Units: "+ originalstate.players['p2'].units, style2);
+		else if (i == 3) text = game.add.text(1020, 690, "Currency: "+ originalstate.players['p2'].currency, style2);
+		textStats.push(text);
+	}
+}
 
 
 
@@ -91,8 +122,13 @@ function doGeneric(){
     updateText()  
 }
 
+
+
 function doSomething(type){
-    originalstate.applyMove(  think(originalstate, type) );
+    console.log("result of think is " + think(originalstate, type));
+    console.log("first move of think for " +type+" is " + think(originalstate, type)[0]);
+    //originalstate.applyMove(  think(originalstate, type)[0] );
+    updateText()
 }
 
 
@@ -102,8 +138,12 @@ function doSomething(type){
 
 
 function updateText(){
-	for (item in textArr) item.destroy();
+	for (var i = 0; i < textArr.length; i++) textArr[i].destroy();
+	for (var i = 0; i < textStats.length; i++) textStats[i].destroy();
 	textArr = [];
+	textStats = [];
+	sideText();
+
 
 
 
@@ -127,7 +167,7 @@ function updateText(){
 
 
 
-
+var testing = false;
 
 
 
@@ -139,22 +179,37 @@ function updateText(){
 
 function actionOnClick1 () {
     if(! originalstate.gameOver){
-        //doGeneric();
-        doSomething('economic');
+        if(testing){
+            doGeneric();
+        }else{
+            doSomething('economic');
+        }
     }
 }
-function actionOnClick2 () {
+
+
+
+function actionOnClick2() {
     if(! originalstate.gameOver){
-        //doGeneric();
-        doSomething('expansional');
+        if(testing){
+            doGeneric();
+        }else{
+            doSomething('expansional');
+        }
     }
 }
-function actionOnClick3 () {
+
+
+function actionOnClick3() {
     if(! originalstate.gameOver){
-        //doGeneric();
-        doSomething('aggressive');
+        if(testing){
+            doGeneric();
+        }else{
+            doSomething('aggressive');
+        }
     }
 }
+
 function over1 () { button1.tint = 0x00FF00; }
 function out1 () { button1.tint = 0xFFFFFF; }
 function over2 () { button2.tint = 0x00FF00; }

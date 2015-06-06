@@ -16,7 +16,7 @@ var THINK_DURATION = 1;
 //to proper syntax
 
 function Node(state, parent, m){
-    this.moves = m = typeof m !== null ? m : null;
+    this.moves = typeof m !== null ? m : null;
     this.parent = typeof parent !== null ? parent: null;
     this.who = state.turn;
     this.children = new Object();
@@ -88,7 +88,7 @@ function lambdaVisits(children, visits){
 
 
 function think(state, desiredType){
-    var root = new Node(state, state, state.terrList[0]);
+    var root = new Node(state, null, null);
         
     var startTime = new Date().getTime() / 1000;
     var endTime = startTime + THINK_DURATION;
