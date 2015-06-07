@@ -1,0 +1,11 @@
+function buildList(){
+	var terr
+terrList.append(Territory(0, 0, n))
+
+n = [2, 3]
+terrList.append(Territory(0, 0, n))
+
+n = [2, 3]
+terrList.append(Territory(0, 0, n))
+
+
