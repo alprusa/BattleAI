@@ -148,8 +148,19 @@ function doSomething(type){
     var move = simpleAI(originalstate, type);
     console.log(move);
     originalstate.applyMove(move);
+    
+    
+    
+    var tempState = originalstate.copy();
+    var moveList = [];
+    moveList.push(move);
+    
+    for(var i = 0; i < 4;i++){
+        moveList.push(simpleAI(tempState,type));
+        tempState.applyMove(moveList[i]);
+    }
     //originalstate.applyMove(  think(originalstate, type)[0] );
-    updateText()
+    updateText();
 
     originalstate.updateSprites();
 }
