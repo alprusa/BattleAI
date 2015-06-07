@@ -103,7 +103,6 @@ function aggressive(state){
                     return possibleMoves[i];
             }
         }
-        return choice(possibleMoves);
     }
     else{
         console.log(state.terrList[possibleMoves[1]['territory']]);
@@ -112,92 +111,126 @@ function aggressive(state){
         var p2 = 'p2';
         if(turn == 'p2') p2 = 'p1';
         var saveMove = null;
-        var movesIndex = pathFinder(state.players[turn].cT, state.players[p2].cT, state);
-        
+        var moves = AStar(state.players[turn].cT, state.players[p2].cT, state.terrList);
         //ownedBy and occupied
-        for(var i = 0; i < possibleMoves.length; i++){
-            if(possibleMoves[i]['extra'] == 'move'){
-                console.log(possibleMoves[i]['territory'],state.players[p2].cT,movesIndex[movesIndex.length-1][0]);
-                if(possibleMoves[i]['territory'] == movesIndex[movesIndex.length-1][0]){
-                    return possibleMoves[i];
+        /*for(var i = 0; i < state.terrList.length; i++){
+            //if(possibleMoves[i]['extra'] == 'move'){
+                console.log(state.terrList[i]);
+                if(state.terrList[i].occupied && state.terrList[i].ownedBy == p2){
+                    AStar(state.players[turn].cT, state.players[p2].cT, state.terrList);
+                    console.log("what?");
+                    moves = possibleMoves[i];
                 }
-            }
-            else if(possibleMoves[i]['extra'] == 'harvest'){
+            //}
+            //else {
                 //do fastest path to get to player
-                saveMove = possibleMoves[i];
-            }
+           //     saveMove = possibleMoves[i];
+           // }
         }
-        console.log(saveMove);
-        return saveMove;
+        
+        if(moves == null) moves = saveMove;*/
+        console.log(moves);
+        return possibleMoves[moves[0]];
     }
 }
 
-function pathFinder(src, dst, state){
-    var dist = {};
-    var prev = {};
-    var detailPoints = {};
+function AStar(src, dst, graph){
+    var forwardDist = new Array();
+    var backwardDist = new Array();
+    var forwardPrev = new Array();
+    var backwardPrev = new Array();
+    var detailPoints = new Array();
+    var visitedNodes = []
     var queue = [];
-    var visitedNodes = [];
-    var node =[];
-    var distanP = [state.terrList[dst].x, state.terrList[dst].y];
-    var srcP = [state.terrList[src].x, state.terrList[src].y];
     
-    detailPoints[src] = srcP;
-    detailPoints[dst] = distanP;
-    dist[src] = 0;
-    prev[src] = 'undefined';
-    queue.push([dist[src], src]);
-    visitedNodes.push(state.terrList[src]);
+    detailPoints[0] = [graph[src].x,graph[src].y];
+    detailPoints[graph.length] = [graph[dst].x,graph[dst].y];
+    visitedNodes.push(graph[0]);
+    forwardDist[0] = 0;
+    backwardDist[graph.length] = 0;
+    forwardPrev[0] = 'undefined';
+    backwardPrev[graph.length] = 'undefined';
+    var tentative = 0;
+    var nextDist = 0;
+    queue.push([forwardDist[0], 0, src]);
+    queue.push([backwardDist[graph.length], graph.length, dst]);
 
-    while (queue.length > 0){
-        node = queue.pop();
-        //console.log(node);
-        var currNode = [state.terrList[node[1]].x,state.terrList[node[1]].y];
-    
-        if (node[1] === dst){
+    while (queue){
+        var queueVals = queue.pop();
+        var currGoal = queueVals[2];
+        var node = queueVals[1];
+        var _ = queueVals[0];
+        
+        console.log(_, node, currGoal);
+        if (currGoal == graph.length && backwardPrev.indexOf(node) > -1)
             break;
-        }
+        if (currGoal == 0 && forwardPrev.indexOf(node) > -1)
+            break;
 
-        neighbors = state.terrList[node[1]].neighbors;
-        for(var i = 0; i < neighbors.length; i++){
-            var nextNode = neighbors[i];
-            var nodePos = detailPoints[node[1]];
-            var nodeX = nodePos[0], nodeY = nodePos[1];
-            var nextX1 = state.terrList[nextNode].x, nextY1 = state.terrList[nextNode].y;
-            var nextPos = [Math.max(nextX1,nodeX), Math.max(nextY1,nodeY)];
+        neighbors = graph[node];
+        for (var nextNode = 1; nextNode < graph.length-1; nextNode++){
+            var nodePos = detailPoints[node];
+            var nodeX = nodePos[0];
+            var nodeY = nodePos[1];
+            //var nextX1 = graph[nextNode].x, nextX2 = graph[nextNode+1].x, nextY1 = graph[nextNode].y, nextY2 = graph[nextNode+1].y;
+            //var nextPos = [Math.min(nextX2-1,Math.max(nextX1,nodeX)), Math.min(nextY2-1,Math.max(nextY1,nodeY))];
+            var nextX1 = graph[nextNode].x, nextY1 = graph[nextNode].y;
+            var nextPos = [nextX1, nextY1];
+            
             detailPoints[nextNode] = nextPos;
-            tentative = dist[node[1]] + eucDist(currNode, detailPoints[nextNode]);
-            if (!dist[nextNode] || tentative < dist[nextNode]){
-                visitedNodes.push(nextNode);
-                dist[nextNode] = tentative;
-                prev[nextNode] = node[1];
-                queue.push([tentative + eucDist(detailPoints[nextNode], distanP), nextNode]);
+            
+            if (currGoal == graph.length)
+                tentative = forwardDist[node] + eucDist(detailPoints[node], detailPoints[nextNode]);
+            else
+                tentative = backwardDist[node] + eucDist(detailPoints[node], detailPoints[nextNode]);
+            if (currGoal == graph.length){
+                if (!(forwardDist.indexOf(nextNode) > -1) || tentative < forwardDist[nextNode]){
+                    visitedNodes.push(nextNode);
+                    forwardDist[nextNode] = tentative;
+                    forwardPrev[nextNode] = node;
+                    queue.push(tentative + eucDist(detailPoints[nextNode], dst), nextNode, graph.length);
+                }
+            }
+            else{
+                if (!(backwardDist.indexOf(nextNode) > -1) || tentative < backwardDist[nextNode]){
+                    visitedNodes.push(nextNode);
+                    backwardDist[nextNode] = tentative;
+                    backwardPrev[nextNode] = node;
+                    queue.push(tentative + eucDist(detailPoints[nextNode], src), nextNode, 0);
+                }
             }
         }
-    }
-    
-    if (node[1] == dst){
-        var path = [];
-        detailPoints[src] = srcP;
-        detailPoints[dst] = distanP;
-        while (node[1] != src){
-            var prevNode = prev[node[1]];
-            if (typeof prevNode !== 'undefined')
-                path.push([node[1], prevNode]);
-            console.log(path);
-            node[1] = prevNode;
+        console.log(backwardPrev.indexOf(node), forwardPrev);
+        if (backwardPrev.indexOf(node) > -1 && forwardPrev.indexOf(node) > -1){
+            var path = [];
+            detailPoints[0] = src;
+            detailPoints[graph.length] = dst;
+            console.log(detailPoints);
+            
+            nodeCopy = node;
+            while (node != null){
+                prevNode = forwardPrev[node];
+                if (typeof prevNode !== 'undefined')
+                    path.append((detailPoints[node], detailPoints[prevNode]));
+                node = prevNode;
+            }
+            while (nodeCopy){
+                prevNode = backwardPrev[nodeCopy];
+                if (typeof prevNode !== 'undefined')
+                    path.append((detailPoints[nodeCopy], detailPoints[prevNode]));
+                nodeCopy = prevNode;
+            }
+            return path;
         }
-        return path;
+        else
+            return [];
     }
-    else
-        return [];
 }
 
 function eucDist(pointA, pointB){
     var x1 = pointA[0], y1 = pointA[1];
     var x2 = pointB[0], y2 = pointB[1];
-    var valToSqrt = Math.pow((x2-x1),2)+Math.pow((y2-y1),2);
-    return Math.round(Math.sqrt(valToSqrt));
+    return Math.sqrt(Math.pow((x2-x1),2)+Math.pow((y2-y1),2));
 }
 
 function simpleAI(state, type){

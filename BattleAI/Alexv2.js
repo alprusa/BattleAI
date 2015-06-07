@@ -339,7 +339,7 @@ function Territory(x,y, nl,val){
 	}else{
 		this.val = val;
 	}
-	this.ownedBy = 'none';                                     
+	this.ownedBy = 'none';
 	this.occupied = false;
 	this.neighbors = nl;     
 }
