@@ -1,4 +1,4 @@
-var style = { font: '15px Arial', fill: '#CCCCCC', align: 'left', fontWeight: 'bold', stroke: '#2d2d2d', strokeThickness: '2' };
+var style = { font: '15px Arial', fill: '#FFFFFF', align: 'left', fontWeight: 'bold', stroke: '#2d2d2d', strokeThickness: '4' };
 var unitCost = 35;
 var maxUnits = 12;
 var minTer = 10;
@@ -99,11 +99,11 @@ gameState.prototype.setupPlayers = function(){
 gameState.prototype.movePlayers = function(){
 	var index1 = this.players['p1'].cT
 	var index2 = this.players['p2'].cT
-	this.players['p1'].x = this.terrList[index1].x;
-	this.players['p1'].y = this.terrList[index1].y;
+	this.players['p1'].x = this.terrList[index1].x+4;
+	this.players['p1'].y = this.terrList[index1].y+4;
 
-	this.players['p2'].x = this.terrList[index2].x;
-	this.players['p2'].y = this.terrList[index2].y;
+	this.players['p2'].x = this.terrList[index2].x+4;
+	this.players['p2'].y = this.terrList[index2].y+4;
 
 }
 
@@ -272,13 +272,16 @@ Player.prototype.copy = function(){
 
 Player.prototype.addSprite = function(){
 
-	var x = originalstate.terrList[this.cT].sprite.x;
-	var y = originalstate.terrList[this.cT].sprite.y;
+	var x = originalstate.terrList[this.cT].sprite.x + 4;
+	var y = originalstate.terrList[this.cT].sprite.y + 4;
 	this.x=x;
 	this.y=y;
+	// 0x66CCFF - blue | 0xFF6666 - red
 	this.sprite = game.add.sprite(x, y, 'player');
-    this.sprite.width = 100;
-    this.sprite.height = 100;
+	if (this.name == "p1") this.sprite.tint = 0x66CCFF;
+	else this.sprite.tint = 0xFF6666;
+    this.sprite.width = 42;
+    this.sprite.height = 42;
 }
 
 Player.prototype.gainUnits = function(){
@@ -349,9 +352,9 @@ function Territory(x,y, nl,val){
 Territory.prototype.addSprite = function(){
 	//this.sprite = sprite;
     this.sprite = game.add.sprite(this.x, this.y, 'circle');
-	this.textOb = game.add.text(this.x-20, this.y+45, "Resources: "+ this.val, style);    
-    this.sprite.width = 45;
-    this.sprite.height = 45;
+	this.textOb = game.add.text(this.x-20, this.y+50, "Resources: "+ this.val, style);    
+    this.sprite.width = 50;
+    this.sprite.height = 50;
 
 
 
