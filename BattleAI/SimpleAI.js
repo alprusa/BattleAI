@@ -38,6 +38,7 @@ function expansional(state){
     var possibleMoves = state.getMoves();
     var turn = state.turn;
     if(state.players[turn].units <= 1){
+        console.log("in units lessthan");
         if(state.players[turn].currency >= 35){
             for(var i = 0; i < possibleMoves.length; i++){
                 if(possibleMoves[i]['extra'] == 'recruit')
@@ -53,6 +54,7 @@ function expansional(state){
         }
     }
     else{
+        console.log("in else");
         var scores = state.getScores();
         var p1 = scores[turn][1];
         var p2 = 'p2';
@@ -61,24 +63,71 @@ function expansional(state){
         var moves = null;
         var areAnyNone = false;
         //ownedBy and occupied
+        if(state.terrList[state.players[turn].cT].ownedBy != turn){
+                console.log("switch in expansion");
+                return {"territory":state.players[turn].cT , "extra": "switch"};
+        }
+        
         for(var i = 0; i < possibleMoves.length; i++){
-            if(possibleMoves[i]['extra'] == 'move'){
-                if(state.terrList[possibleMoves[i]['territory']].ownedBy == "none")
+            if(possibleMoves[i]['extra'] == 'move' && !state.terrList[possibleMoves[i]['territory']].occupied){
+                if( state.terrList[possibleMoves[i]['territory']].ownedBy == 'none'){
+                    console.log("found a close 'none' ");
                     return possibleMoves[i];
-                else if(state.terrList[possibleMoves[i]['territory']].ownedBy == p2 && state.terrList[possibleMoves[i]['territory']] != state.players[p2].cT){
-                    moves = possibleMoves[i];
                 }
-                else if(state.terrList[possibleMoves[i]['territory']].ownedBy == turn){
-                    if(scores[turn][0] - scores[p2][0] > 0) saveMove = possibleMoves[i];
-                }
-            }
-            else if(possibleMoves[i]['extra'] == 'harvest'){
-                saveMove = possibleMoves[i];
+               
+
             }
         }
         
-        if(moves == null) moves = saveMove;
-        return moves;
+        
+        for(var i = 0; i < possibleMoves.length; i++){
+            if(possibleMoves[i]['extra'] == 'move' && !state.terrList[possibleMoves[i]['territory']].occupied){
+                if( state.terrList[possibleMoves[i]['territory']].ownedBy == p2){
+                    console.log("found a close 'p2' ");
+                    return possibleMoves[i];
+                }
+               
+
+            }
+        }
+        
+        
+        var noneList = [];
+        
+        var otherList = [];
+        
+        var len1 = 10000000000000;
+        var len2 = 10000000000000;
+        for( var i = 0; i< state.terrList.length; i++){
+            if(state.terrList[i].ownedBy == p2 && pathFinder(state.players[turn].cT,i,state).length< len1){
+                
+                
+                otherList = pathFinder(state.players[turn].cT,i,state);
+                len1 = otherList.length;
+            }else if(state.terrList[i].ownedBy == "none" && pathFinder(state.players[turn].cT,i,state).length< len2){
+                noneList = pathFinder(state.players[turn].cT,i,state);
+                len2 = noneList.length;
+            }   
+        }
+        if(noneList.length!= 0 && otherList.length !=0){
+            if(noneList.length<=otherList.length){
+                return {"territory":noneList[noneList.length-1][0] , "extra": "move"};
+            }else{
+                return {"territory":otherList[otherList.length-1][0], "extra": "move"};
+            }
+      
+        }else{
+            console.log("hitthe backup");
+            return{"territory":state.players[turn].cT , "extra": "harvest"};
+            
+        }
+        
+        
+        
+        
+        
+       
+        
     }
 }
 
@@ -106,7 +155,7 @@ function aggressive(state){
         return choice(possibleMoves);
     }
     else{
-        console.log(state.terrList[possibleMoves[1]['territory']]);
+        
         var scores = state.getScores();
         var p1 = scores[turn][2];
         var p2 = 'p2';
@@ -184,7 +233,7 @@ function pathFinder(src, dst, state){
             var prevNode = prev[node[1]];
             if (typeof prevNode !== 'undefined')
                 path.push([node[1], prevNode]);
-            console.log(path);
+          
             node[1] = prevNode;
         }
         return path;

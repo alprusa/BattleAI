@@ -75,14 +75,14 @@ function create() {
 
 
 
-
+var t = true;
 
 function gameLoop(){
-    if (timer%30 == 0 && originalstate.gameOver == true){
-        console.log("the winner is " + originalstate.winner);
-
+    if (originalstate.gameOver == true && t){
+        alert("the winner is " + originalstate.winner);
+        t = false;
     }
-    timer++;
+    
 }
 
 
@@ -144,7 +144,10 @@ function doGeneric(){
 function doSomething(type){
     //console.log("result of think is " + think(originalstate, type));
     //console.log("first move of think for " +type+" is " + think(originalstate, type));
-    originalstate.applyMove(simpleAI(originalstate, type));
+    
+    var move = simpleAI(originalstate, type);
+    console.log(move);
+    originalstate.applyMove(move);
     //originalstate.applyMove(  think(originalstate, type)[0] );
     updateText()
 
@@ -231,11 +234,11 @@ function actionOnClick3() {
     }
 }
 
-
+//controls what is seen upon hover
 function getMoveSet(t){ //Placeholder, need to replace with something substantial
-	if (t == "Economic") return [{"territory":0, "extra":"harvest"}, {"territory":1, "extra":"recruit"}, {"territory":2, "extra":"switch"}, {"territory":3, "extra":"switch"}, {"territory":4, "extra":"switch"}];
-	if (t == "Expansional") return [{"territory":0, "extra":"harvest"}, {"territory":1, "extra":"recruit"}, {"territory":2, "extra":"switch"}, {"territory":3, "extra":"switch"}, {"territory":4, "extra":"switch"}];
-	if (t == "Aggresive") return [{"territory":0, "extra":"harvest"}, {"territory":1, "extra":"recruit"}, {"territory":2, "extra":"switch"}, {"territory":3, "extra":"switch"}, {"territory":4, "extra":"switch"}];
+	//if (t == "Economic") return [{"territory":0, "extra":"harvest"}, {"territory":1, "extra":"recruit"}, {"territory":2, "extra":"switch"}, {"territory":3, "extra":"switch"}, {"territory":4, "extra":"switch"}];
+	//if (t == "Expansional") return [{"territory":0, "extra":"harvest"}, {"territory":1, "extra":"recruit"}, {"territory":2, "extra":"switch"}, {"territory":3, "extra":"switch"}, {"territory":4, "extra":"switch"}];
+	//if (t == "Aggresive") return [{"territory":0, "extra":"harvest"}, {"territory":1, "extra":"recruit"}, {"territory":2, "extra":"switch"}, {"territory":3, "extra":"switch"}, {"territory":4, "extra":"switch"}];
 }
 function getText(t) {
 	if (t == "harvest") return "Harvest";

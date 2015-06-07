@@ -29,9 +29,12 @@ function gameState(list){
 		var index2 = Math.round(Math.random()*(this.terrList.length-1));
 	}while( index1 == index2);
 
-
+    index1 =0;
+    index2 =14;
 	this.terrList[index1].ownedBy="p1";
-	this.terrList[index2].ownedBy="p2";
+    this.terrList[index1].occupied=true;
+    this.terrList[index2].ownedBy="p2";
+	this.terrList[index2].occupied=true;
 
 
 	this.players = {'p1': new Player('p1',index1) ,'p2': new Player('p2',index2)};
@@ -81,7 +84,6 @@ gameState.prototype.doBattle =function(){
 		
 	}else if(this.players['p2'].units == 0){
 		this.winner = "p1";
-
 		this.gameOver = true;
 		
 	}
@@ -149,7 +151,7 @@ gameState.prototype.applyMove = function(move){
 	
 		if(this.terrList[territory].occupied){
 
-			this.doBattle()
+			this.doBattle();
 
 
 		}else{
@@ -165,11 +167,8 @@ gameState.prototype.applyMove = function(move){
 
 				//if it is neutral
 				}else{
-					this.terrList[territory].ownedBy = this.turn;
-					
+					this.terrList[territory].ownedBy = this.turn;	
 				}
-
-
 			}
 
 
@@ -186,7 +185,7 @@ gameState.prototype.applyMove = function(move){
 			this.terrList[currPlayer.cT].applyVal(currPlayer);
 			
 		}else if(extraInfo == "switch"){
-			this.terrList[currPlayer.cT].applyVal(currPlayer);
+			this.terrList[currPlayer.cT].ownedBy = this.turn;
 			
 		}
 	}
