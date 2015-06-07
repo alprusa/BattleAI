@@ -245,11 +245,19 @@ function getText(t) {
 
 function debug(movesTemp) {
 	for (i = 0; i < movesTemp.length; i++) {
-		spritesArr[movesTemp[i]["territory"]].visible = true;
-		text = game.add.text(spritesArr[movesTemp[i]["territory"]].x+25, spritesArr[movesTemp[i]["territory"]].y+10, i+1, style2);
-		text2 = game.add.text(spritesArr[movesTemp[i]["territory"]].x+11, spritesArr[movesTemp[i]["territory"]].y+28, getText(movesTemp[i]["extra"]), style1);
-		textArr.push(text);
-		textArr.push(text2);
+		if (i == originalstate.players["p2"].cT) {
+			text = game.add.text(spritesArr[movesTemp[i]["territory"]].x+25, spritesArr[movesTemp[i]["territory"]].y+10, i+1, style2);
+			text2 = game.add.text(spritesArr[movesTemp[i]["territory"]].x+10, spritesArr[movesTemp[i]["territory"]].y+29, "BATTLE", style1);
+			textArr.push(text);
+			textArr.push(text2);
+			break;
+		} else {
+			spritesArr[movesTemp[i]["territory"]].visible = true;
+			text = game.add.text(spritesArr[movesTemp[i]["territory"]].x+25, spritesArr[movesTemp[i]["territory"]].y+10, i+1, style2);
+			text2 = game.add.text(spritesArr[movesTemp[i]["territory"]].x+11, spritesArr[movesTemp[i]["territory"]].y+28, getText(movesTemp[i]["extra"]), style1);
+			textArr.push(text);
+			textArr.push(text2);
+		}
 	}
 }
 function debugOut() {
