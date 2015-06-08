@@ -38,7 +38,6 @@ function expansional(state){
     var possibleMoves = state.getMoves();
     var turn = state.turn;
     if(state.players[turn].units <= 1){
-        console.log("in units lessthan");
         if(state.players[turn].currency >= 35){
             for(var i = 0; i < possibleMoves.length; i++){
                 if(possibleMoves[i]['extra'] == 'recruit')
@@ -54,7 +53,6 @@ function expansional(state){
         }
     }
     else{
-        console.log("in else");
         var scores = state.getScores();
         var p1 = scores[turn][1];
         var p2 = 'p2';
@@ -64,18 +62,14 @@ function expansional(state){
         var areAnyNone = false;
         //ownedBy and occupied
         if(state.terrList[state.players[turn].cT].ownedBy != turn){
-                console.log("switch in expansion");
                 return {"territory":state.players[turn].cT , "extra": "switch"};
         }
         
         for(var i = 0; i < possibleMoves.length; i++){
             if(possibleMoves[i]['extra'] == 'move' && !state.terrList[possibleMoves[i]['territory']].occupied){
                 if( state.terrList[possibleMoves[i]['territory']].ownedBy == 'none'){
-                    console.log("found a close 'none' ");
                     return possibleMoves[i];
                 }
-               
-
             }
         }
         
@@ -83,7 +77,6 @@ function expansional(state){
         for(var i = 0; i < possibleMoves.length; i++){
             if(possibleMoves[i]['extra'] == 'move' && !state.terrList[possibleMoves[i]['territory']].occupied){
                 if( state.terrList[possibleMoves[i]['territory']].ownedBy == p2){
-                    console.log("found a close 'p2' ");
                     return possibleMoves[i];
                 }
                
@@ -100,8 +93,6 @@ function expansional(state){
         var len2 = 10000000000000;
         for( var i = 0; i< state.terrList.length; i++){
             if(state.terrList[i].ownedBy == p2 && pathFinder(state.players[turn].cT,i,state).length< len1){
-                
-                
                 otherList = pathFinder(state.players[turn].cT,i,state);
                 len1 = otherList.length;
             }else if(state.terrList[i].ownedBy == "none" && pathFinder(state.players[turn].cT,i,state).length< len2){
@@ -117,17 +108,9 @@ function expansional(state){
             }
       
         }else{
-            console.log("hitthe backup");
             return{"territory":state.players[turn].cT , "extra": "harvest"};
             
         }
-        
-        
-        
-        
-        
-       
-        
     }
 }
 
@@ -166,7 +149,6 @@ function aggressive(state){
         //ownedBy and occupied
         for(var i = 0; i < possibleMoves.length; i++){
             if(possibleMoves[i]['extra'] == 'move'){
-                console.log(possibleMoves[i]['territory'],state.players[p2].cT,movesIndex[movesIndex.length-1][0]);
                 if(possibleMoves[i]['territory'] == movesIndex[movesIndex.length-1][0]){
                     return possibleMoves[i];
                 }
@@ -176,7 +158,6 @@ function aggressive(state){
                 saveMove = possibleMoves[i];
             }
         }
-        console.log(saveMove);
         return saveMove;
     }
 }
@@ -186,7 +167,7 @@ function pathFinder(src, dst, state){
     var prev = {};
     var detailPoints = {};
     var queue = [];
-    var visitedNodes = [];
+    //var visitedNodes = [];
     var node =[];
     var distanP = [state.terrList[dst].x, state.terrList[dst].y];
     var srcP = [state.terrList[src].x, state.terrList[src].y];
@@ -196,11 +177,10 @@ function pathFinder(src, dst, state){
     dist[src] = 0;
     prev[src] = 'undefined';
     queue.push([dist[src], src]);
-    visitedNodes.push(state.terrList[src]);
+    //visitedNodes.push(state.terrList[src]);
 
     while (queue.length > 0){
         node = queue.pop();
-        //console.log(node);
         var currNode = [state.terrList[node[1]].x,state.terrList[node[1]].y];
     
         if (node[1] === dst){
@@ -217,7 +197,7 @@ function pathFinder(src, dst, state){
             detailPoints[nextNode] = nextPos;
             tentative = dist[node[1]] + eucDist(currNode, detailPoints[nextNode]);
             if (!dist[nextNode] || tentative < dist[nextNode]){
-                visitedNodes.push(nextNode);
+                //visitedNodes.push(nextNode);
                 dist[nextNode] = tentative;
                 prev[nextNode] = node[1];
                 queue.push([tentative + eucDist(detailPoints[nextNode], distanP), nextNode]);
@@ -233,7 +213,6 @@ function pathFinder(src, dst, state){
             var prevNode = prev[node[1]];
             if (typeof prevNode !== 'undefined')
                 path.push([node[1], prevNode]);
-          
             node[1] = prevNode;
         }
         return path;
