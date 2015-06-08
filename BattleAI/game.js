@@ -3,6 +3,8 @@ var game = new Phaser.Game(1200, 800, Phaser.AUTO, 'phaser-example', { preload: 
 var button1;
 var button2;
 var button3;
+var count = 0;
+var flip = true;
 var textArr = []; //debug text
 var textStats = []; //side text
 var spritesArr = []; //debug sprites
@@ -11,7 +13,7 @@ var style1 = { font: '11px Arial', fill: '#EEEEEE', align: 'center' };
 var style2 = { font: '20px Arial', fill: '#CCCCCC', align: 'left', fontWeight: 'bold' };
 var timer = 0;
 
-
+var moveList = [];
 
 function preload() {
     game.stage.backgroundColor = '#2d2d2d';
@@ -145,20 +147,21 @@ function doSomething(type){
     //console.log("result of think is " + think(originalstate, type));
     //console.log("first move of think for " +type+" is " + think(originalstate, type));
     
-    var move = simpleAI(originalstate, type);
+    //var move = simpleAI(originalstate, type);
+	var move = scriptMoves[count];
+	count++;
+	flip ? flip = false : flip = true;
     console.log(move);
     originalstate.applyMove(move);
     
+    //var tempState = originalstate.copy();
+    //moveList = [];
+    //moveList.push(move);
     
-    
-    var tempState = originalstate.copy();
-    var moveList = [];
-    moveList.push(move);
-    
-    for(var i = 0; i < 4;i++){
-        moveList.push(simpleAI(tempState,type));
-        tempState.applyMove(moveList[i]);
-    }
+    //for(var i = 0; i < 4;i++){
+        //moveList.push(simpleAI(tempState,type));
+        //tempState.applyMove(moveList[i]);
+    //}
     //originalstate.applyMove(  think(originalstate, type)[0] );
     updateText();
 
@@ -199,13 +202,7 @@ function updateText(){
 
 
 
-
-
 var testing = false;
-
-
-
-
 
 
 
@@ -220,6 +217,9 @@ function actionOnClick1 () {
             doSomething('economic');
         }
     }
+	debugOut();
+	var movesTemp = getMoveSet("Economic");
+	debug(movesTemp);
 }
 
 
@@ -232,6 +232,9 @@ function actionOnClick2() {
             doSomething('expansional');
         }
     }
+	debugOut();
+	var movesTemp = getMoveSet("Expansional");
+	debug(movesTemp);
 }
 
 
@@ -243,35 +246,49 @@ function actionOnClick3() {
             doSomething('aggressive');
         }
     }
+	debugOut();
+	var movesTemp = getMoveSet("Aggressive");
+	debug(movesTemp);
 }
 
-//controls what is seen upon hover
-function getMoveSet(t){ //Placeholder, need to replace with something substantial
-	//if (t == "Economic") return [{"territory":0, "extra":"harvest"}, {"territory":1, "extra":"recruit"}, {"territory":2, "extra":"switch"}, {"territory":3, "extra":"switch"}, {"territory":4, "extra":"switch"}];
-	//if (t == "Expansional") return [{"territory":0, "extra":"harvest"}, {"territory":1, "extra":"recruit"}, {"territory":2, "extra":"switch"}, {"territory":3, "extra":"switch"}, {"territory":4, "extra":"switch"}];
-	//if (t == "Aggresive") return [{"territory":0, "extra":"harvest"}, {"territory":1, "extra":"recruit"}, {"territory":2, "extra":"switch"}, {"territory":3, "extra":"switch"}, {"territory":4, "extra":"switch"}];
-}
+
 function getText(t) {
 	if (t == "harvest") return "Harvest";
-	if (t == "recruit") return "Recruit";
+	if (t == "move") return "Expand";
 	if (t == "switch") return "Capture";
+	else return "  Move";
 }
 
 function debug(movesTemp) {
-	for (i = 0; i < movesTemp.length; i++) {
-		if (i == originalstate.players["p2"].cT) {
+	for(var u = 0; u < spritesArr.length; u++){
+		flip ? spritesArr[u].tint=0x66CCFF : spritesArr[u].tint=0xFF6666;
+	}
+	var prev;
+	var offset = 12;
+	for (i = 0; i < movesTemp.length && i < 4; i++) {
+		if (movesTemp[i]["territory"] == originalstate.players["p2"].cT) {
 			text = game.add.text(spritesArr[movesTemp[i]["territory"]].x+25, spritesArr[movesTemp[i]["territory"]].y+10, i+1, style2);
 			text2 = game.add.text(spritesArr[movesTemp[i]["territory"]].x+10, spritesArr[movesTemp[i]["territory"]].y+29, "BATTLE", style1);
 			textArr.push(text);
 			textArr.push(text2);
 			break;
+		} else if (movesTemp[i]["territory"] == prev) {
+			var temp = textArr.pop();
+			temp.destroy();
+			text = game.add.text(spritesArr[movesTemp[i]["territory"]].x+25+offset, spritesArr[movesTemp[i]["territory"]].y+10, ","+(i+1), style2);
+			text2 = game.add.text(spritesArr[movesTemp[i]["territory"]].x+11, spritesArr[movesTemp[i]["territory"]].y+30, "Harvest", style1);
+			textArr.push(text);
+			textArr.push(text2);
+			offset += 17;
 		} else {
 			spritesArr[movesTemp[i]["territory"]].visible = true;
 			text = game.add.text(spritesArr[movesTemp[i]["territory"]].x+25, spritesArr[movesTemp[i]["territory"]].y+10, i+1, style2);
-			text2 = game.add.text(spritesArr[movesTemp[i]["territory"]].x+11, spritesArr[movesTemp[i]["territory"]].y+28, getText(movesTemp[i]["extra"]), style1);
+			text2 = game.add.text(spritesArr[movesTemp[i]["territory"]].x+11, spritesArr[movesTemp[i]["territory"]].y+30, getText(movesTemp[i]["extra"]), style1);
 			textArr.push(text);
 			textArr.push(text2);
+			offset = 12;
 		}
+		prev = movesTemp[i]["territory"];
 	}
 }
 function debugOut() {
@@ -279,6 +296,10 @@ function debugOut() {
 		spritesArr[i].visible = false;
 	}
 	for (i = 0; i < textArr.length; i++) textArr[i].destroy();
+}
+
+function getMoveSet (q) {
+	return ghostMoves[count];
 }
 
 function over1 () {

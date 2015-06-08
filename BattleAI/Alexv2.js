@@ -1,4 +1,5 @@
 var style = { font: '15px Arial', fill: '#FFFFFF', align: 'left', fontWeight: 'bold', stroke: '#2d2d2d', strokeThickness: '4' };
+var style3 = { font: '15px Arial', fill: '#AAAAAA', align: 'left', fontWeight: 'bold', stroke: '#2d2d2d', strokeThickness: '4' };
 var unitCost = 35;
 var maxUnits = 12;
 var minTer = 10;
@@ -135,9 +136,6 @@ gameState.prototype.updateSprites = function(){
 
 
 
-
-
-
 gameState.prototype.applyMove = function(move){
 
 	var territory = move['territory'];
@@ -191,7 +189,7 @@ gameState.prototype.applyMove = function(move){
 	}
 	for(var i = 0; i< this.terrList.length; i++){
 		if(this.terrList[i].ownedBy != 'none'){
-			if(this.players["p1"].cT!= i || this.players["p2"].ct!= i){
+			if(this.players["p1"].cT!= i || this.players["p2"].cT!= i){
 				this.timeLimit++;
 
 			}
@@ -205,10 +203,6 @@ gameState.prototype.applyMove = function(move){
 	
 
 }
-
-
-
-
 
 
 gameState.prototype.getMoves = function(){
@@ -347,7 +341,7 @@ function Territory(x,y, nl,val){
 }
 
 
-
+var debugCount = 0;
 Territory.prototype.addSprite = function(){
 	//this.sprite = sprite;
     this.sprite = game.add.sprite(this.x, this.y, 'circle');
@@ -355,7 +349,8 @@ Territory.prototype.addSprite = function(){
     this.sprite.width = 50;
     this.sprite.height = 50;
 
-
+	var tempDebug = game.add.text(this.x+17, this.y-20, debugCount, style3);
+	debugCount++;
 
 }
 
