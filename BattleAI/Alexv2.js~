@@ -349,7 +349,7 @@ Territory.prototype.addSprite = function(){
     this.sprite.width = 50;
     this.sprite.height = 50;
 
-	//var tempDebug = game.add.text(this.x+17, this.y-20, debugCount, style3);
+	var tempDebug = game.add.text(this.x+17, this.y-20, debugCount, style3);
 	debugCount++;
 
 }
