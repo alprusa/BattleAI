@@ -47,7 +47,7 @@ function gameState(list){
 
 gameState.prototype.doBattle =function(){
 
-	console.log("battle");
+	alert("battle");
 	list1 = [];
 	list2 = [];
 
