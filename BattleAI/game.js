@@ -12,8 +12,20 @@ var originalstate;
 var style1 = { font: '11px Arial', fill: '#EEEEEE', align: 'center' };
 var style2 = { font: '20px Arial', fill: '#CCCCCC', align: 'left', fontWeight: 'bold' };
 var timer = 0;
+var THINK_DURATION = 1;
+
+
+var startTime = new Date().getTime() / 1000;
+var endTime = startTime + THINK_DURATION;
+var currTime = startTime;
+    
+
+
 
 var moveList = [];
+
+
+var done  = false;
 
 function preload() {
     game.stage.backgroundColor = '#2d2d2d';
@@ -84,7 +96,11 @@ function gameLoop(){
         alert("the winner is " + originalstate.winner);
         t = false;
     }
-    
+    currTime = new Date().getTime() / 1000;
+    if(done && currTime>=endTime){
+        AIplays();
+        done = false;
+    }
 }
 
 
@@ -153,6 +169,8 @@ function doSomething(type){
 	flip ? flip = false : flip = true;
     console.log(move);
     originalstate.applyMove(move);
+    updateText();
+    originalstate.updateSprites();
     
     //var tempState = originalstate.copy();
     //moveList = [];
@@ -166,11 +184,37 @@ function doSomething(type){
     updateText();
 
     originalstate.updateSprites();
+    done = true;
+            
+    startTime = new Date().getTime() / 1000;
+    endTime = startTime + THINK_DURATION;
+    
 }
 
 
 
+function AIplays(){
 
+    if(currTime >= endTime){
+        if(originalstate.turn == "p2"){
+            if(! originalstate.gameOver){
+                if(testing){
+                    doGeneric();
+                }else{
+                    var type = ['economic', 'expansional', 'aggressive'];
+                    doSomething(choice(type));
+                }
+            }
+            debugOut();
+            var moveType = ['Economic', 'Expansional', 'Aggressive'];
+            var movesTemp = getMoveSet(choice(moveType));
+            debug(movesTemp);
+        }
+       
+    }
+            
+    
+}
 
 
 
@@ -220,6 +264,7 @@ function actionOnClick1 () {
 	debugOut();
 	var movesTemp = getMoveSet("Economic");
 	debug(movesTemp);
+  
 }
 
 
@@ -235,6 +280,7 @@ function actionOnClick2() {
 	debugOut();
 	var movesTemp = getMoveSet("Expansional");
 	debug(movesTemp);
+   
 }
 
 
@@ -249,6 +295,7 @@ function actionOnClick3() {
 	debugOut();
 	var movesTemp = getMoveSet("Aggressive");
 	debug(movesTemp);
+  
 }
 
 
