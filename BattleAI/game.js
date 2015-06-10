@@ -13,6 +13,7 @@ var style1 = { font: '11px Arial', fill: '#EEEEEE', align: 'center' };
 var style2 = { font: '20px Arial', fill: '#CCCCCC', align: 'left', fontWeight: 'bold' };
 var timer = 0;
 var THINK_DURATION = 1;
+var music;
 
 
 var startTime = new Date().getTime() / 1000;
@@ -23,10 +24,6 @@ var currTime = startTime;
 
 
 var moveList = [];
-var dict = {};
-
-
-
 
 
 var done  = false;
@@ -38,6 +35,7 @@ function preload() {
     game.load.image('aggressive', '3.png');
     game.load.image('circle', 'circle.png');
     game.load.image('player', 'circle2.png');
+    //game.load.audio('epic', ['epic.mp3', 'epic.ogg']);
     setupOurGame()
 }
 
@@ -53,6 +51,8 @@ function create() {
     button2.onInputOut.add(out2, this);
     button3.onInputOver.add(over3, this);
     button3.onInputOut.add(out3, this);
+    //music = game.add.audio('epic');
+    //game.debug.soundInfo(music, 20, 32);
 
     //draw lines
     for (var i = 0; i < originalstate.terrList.length; i++) {
@@ -165,20 +165,18 @@ function doGeneric(){
 
 function doSomething(type){
     //console.log("result of think is " + think(originalstate, type));
-    //console.log("first move of think for " +type+" is " + think(originalstate, type));
+    console.log("first move of think for " +type+" is ");
+    var tink = think(originalstate, type);
+    console.log(tink);
     
     //var move = simpleAI(originalstate, type);
-
-   //simpleMCT(originalstate);
-
-
-	/*var move = scriptMoves[count];
-	count++;
-	flip ? flip = false : flip = true;
-
-    originalstate.applyMove(move);
-    updateText();
-    originalstate.updateSprites();*/
+	//var move = scriptMoves[count];
+	//count++;
+	//flip ? flip = false : flip = true;
+    //console.log(move);
+    //originalstate.applyMove(move);
+    //updateText();
+    //originalstate.updateSprites();
     
     //var tempState = originalstate.copy();
     //moveList = [];
@@ -188,10 +186,10 @@ function doSomething(type){
         //moveList.push(simpleAI(tempState,type));
         //tempState.applyMove(moveList[i]);
     //}
-    originalstate.applyMove(  think(originalstate, type) );
+    //originalstate.applyMove(think(originalstate, type));
     updateText();
-
     originalstate.updateSprites();
+    
     done = true;
             
     startTime = new Date().getTime() / 1000;
@@ -216,7 +214,7 @@ function AIplays(){
             debugOut();
             var moveType = ['Economic', 'Expansional', 'Aggressive'];
             var movesTemp = getMoveSet(choice(moveType));
-            debug(movesTemp);
+            //debug(movesTemp);
         }
        
     }
@@ -270,11 +268,9 @@ function actionOnClick1 () {
         }
     }
 	debugOut();
-
 	var movesTemp = getMoveSet("Economic");
-	debug(movesTemp);
+	//debug(movesTemp);
   
-
 }
 
 
@@ -289,9 +285,8 @@ function actionOnClick2() {
     }
 	debugOut();
 	var movesTemp = getMoveSet("Expansional");
-	debug(movesTemp);
+	//debug(movesTemp);
    
-
 }
 
 
@@ -304,14 +299,10 @@ function actionOnClick3() {
         }
     }
 	debugOut();
-
 	var movesTemp = getMoveSet("Aggressive");
-	debug(movesTemp);
-
+	//debug(movesTemp);
+  
 }
-
-
-
 
 
 function getText(t) {
@@ -320,13 +311,6 @@ function getText(t) {
 	if (t == "switch") return "Capture";
 	else return "  Move";
 }
-
-
-
-
-
-
-
 
 function debug(movesTemp) {
 	for(var u = 0; u < spritesArr.length; u++){
@@ -360,12 +344,6 @@ function debug(movesTemp) {
 		prev = movesTemp[i]["territory"];
 	}
 }
-
-
-
-
-
-
 function debugOut() {
 	for (i = 0; i < spritesArr.length; i++) {
 		spritesArr[i].visible = false;
@@ -374,31 +352,31 @@ function debugOut() {
 }
 
 function getMoveSet (q) {
-	return ghostMoves[count];
+	//return ghostMoves[count];
 }
 
 function over1 () {
-	var movesTemp = getMoveSet("Economic");
+	//var movesTemp = getMoveSet("Economic");
 	button1.tint = 0x00FF00;
-	debug(movesTemp);
+	//debug(movesTemp);
 }
 function out1 () {
 	button1.tint = 0xFFFFFF;
 	debugOut();
 }
 function over2 () {
-	var movesTemp = getMoveSet("Expansional");
+	//var movesTemp = getMoveSet("Expansional");
 	button2.tint = 0x00FF00;
-	debug(movesTemp);
+	//debug(movesTemp);
 }
 function out2 () {
 	button2.tint = 0xFFFFFF;
 	debugOut();
 }
 function over3 () {
-	var movesTemp = getMoveSet("Aggresive");
+	//var movesTemp = getMoveSet("Aggresive");
 	button3.tint = 0x00FF00;
-	debug(movesTemp);
+	//debug(movesTemp);
 }
 function out3 () {
 	button3.tint = 0xFFFFFF;

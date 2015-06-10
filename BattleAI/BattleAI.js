@@ -158,7 +158,7 @@ function think(state, desiredType){
     //AISearch = true;
 
     while(true){
-        var tempState = state.copy();
+        var tempState = state;
         var node = root;
 
         //Select untried moves score difference
@@ -206,7 +206,7 @@ function think(state, desiredType){
         
         currTime = new Date().getTime() / 1000;
         iteration++;
-        if (currTime > endTime || iteration >= 5){
+        if (currTime > endTime || iteration >= 1){
             //root = node;
             
             console.log(node);
