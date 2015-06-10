@@ -47,7 +47,7 @@ function gameState(list){
 
 gameState.prototype.doBattle =function(){
 
-	alert("battle");
+	//alert("battle");
 	list1 = [];
 	list2 = [];
 
@@ -116,7 +116,16 @@ gameState.prototype.copy = function(){
 
 
 	temp.players = {'p1': this.players['p1'].copy() ,'p2': this.players['p2'].copy()};
-	temp.terrList = this.terrList.slice();
+	var tempList = [];
+
+	for(var i = 0; i< this.terrList.length; i++){
+		tempList.push(this.terrList[i].copy());
+
+
+	}
+
+
+	temp.terrList = tempList;
 	temp.turn = this.turn;
 
 
@@ -341,11 +350,36 @@ function Territory(x,y, nl,val){
 }
 
 
+
+
+Territory.prototype.copy = function(){
+	var temp = new Territory(this.x,this.y,this.neighbors, this.val);
+	temp.ownedBy = this.ownedBy;
+	temp.occupied = this.occupied;
+	temp.addSprite2();
+	return temp;  
+}
+
+
 var debugCount = 0;
 Territory.prototype.addSprite = function(){
 	//this.sprite = sprite;
     this.sprite = game.add.sprite(this.x, this.y, 'circle');
 	this.textOb = game.add.text(this.x-20, this.y+50, "Resources: "+ this.val, style);    
+    this.sprite.width = 50;
+    this.sprite.height = 50;
+
+	//var tempDebug = game.add.text(this.x+17, this.y-20, debugCount, style3);
+	debugCount++;
+
+}
+
+
+
+Territory.prototype.addSprite2 = function(){
+	//this.sprite = sprite;
+    this.sprite = game.add.sprite(-200, -200, 'circle');
+	this.textOb = game.add.text(-200, -500, "Resources: "+ this.val, style);    
     this.sprite.width = 50;
     this.sprite.height = 50;
 

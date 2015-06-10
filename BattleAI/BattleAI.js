@@ -59,6 +59,7 @@ function UCTSelectChild(children, tempState, who, visits, parentVisits, desiredT
     switch(desiredType){ 
         case "economic":
             //score = idvScoreDiff(scores, 0);
+            index = 0
             if(who == 'p1'){
                 score = scores["who"][index] - scores["p2"][index];
             }

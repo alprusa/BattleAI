@@ -168,10 +168,14 @@ function doSomething(type){
     //console.log("first move of think for " +type+" is " + think(originalstate, type));
     
     //var move = simpleAI(originalstate, type);
+
+   simpleMCT(originalstate);
+
+
 	var move = scriptMoves[count];
 	count++;
 	flip ? flip = false : flip = true;
-    console.log(move);
+
     originalstate.applyMove(move);
     updateText();
     originalstate.updateSprites();
@@ -307,12 +311,22 @@ function actionOnClick3() {
 }
 
 
+
+
+
 function getText(t) {
 	if (t == "harvest") return "Harvest";
 	if (t == "move") return "Expand";
 	if (t == "switch") return "Capture";
 	else return "  Move";
 }
+
+
+
+
+
+
+
 
 function debug(movesTemp) {
 	for(var u = 0; u < spritesArr.length; u++){
@@ -346,6 +360,12 @@ function debug(movesTemp) {
 		prev = movesTemp[i]["territory"];
 	}
 }
+
+
+
+
+
+
 function debugOut() {
 	for (i = 0; i < spritesArr.length; i++) {
 		spritesArr[i].visible = false;
