@@ -169,7 +169,7 @@ function doSomething(type){
     
     //var move = simpleAI(originalstate, type);
 
-   simpleMCT(originalstate);
+   //simpleMCT(originalstate);
 
 
 	var move = scriptMoves[count];
