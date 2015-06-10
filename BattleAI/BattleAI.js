@@ -158,7 +158,7 @@ function think(state, desiredType){
     //AISearch = true;
 
     while(true){
-        var tempState = state;
+        var tempState = state.copy();
         var node = root;
 
         //Select untried moves score difference
@@ -185,7 +185,8 @@ function think(state, desiredType){
         }
         
         //Rollout get moves - this can often be made orders of magnitude quicker using a state.GetRandomMove() function
-        while (typeof node.totalScore !== 'undefined' && node.totalScore.length > 0 && (node.totalScore[0] < 500 || node.totalScore[1] < 12 || node.totalScore[2] > 0)){
+        while (typeof node.totalScore !== 'undefined' && node.totalScore != null && node.totalScore.length > 0
+                && (node.totalScore[0] < 100 || node.totalScore[1] < 12 || node.totalScore[2] > 0)){
             //hueristic here perhaps to be the choice function
             var sd = scoreDiff(tempState,tempState.turn);
             var chosen = whichMove(tempState.getMoves(),sd,desiredType,tempState);
@@ -205,7 +206,7 @@ function think(state, desiredType){
         
         currTime = new Date().getTime() / 1000;
         iteration++;
-        if (currTime > endTime || iteration >= 1){
+        if (currTime > endTime || iteration >= 5){
             //root = node;
             
             console.log(node);

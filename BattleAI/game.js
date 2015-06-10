@@ -172,13 +172,13 @@ function doSomething(type){
    //simpleMCT(originalstate);
 
 
-	var move = scriptMoves[count];
+	/*var move = scriptMoves[count];
 	count++;
 	flip ? flip = false : flip = true;
 
     originalstate.applyMove(move);
     updateText();
-    originalstate.updateSprites();
+    originalstate.updateSprites();*/
     
     //var tempState = originalstate.copy();
     //moveList = [];
@@ -188,7 +188,7 @@ function doSomething(type){
         //moveList.push(simpleAI(tempState,type));
         //tempState.applyMove(moveList[i]);
     //}
-    //originalstate.applyMove(  think(originalstate, type)[0] );
+    originalstate.applyMove(  think(originalstate, type) );
     updateText();
 
     originalstate.updateSprites();
