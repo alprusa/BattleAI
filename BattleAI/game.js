@@ -23,6 +23,10 @@ var currTime = startTime;
 
 
 var moveList = [];
+var dict = {};
+
+
+
 
 
 var done  = false;
@@ -262,9 +266,11 @@ function actionOnClick1 () {
         }
     }
 	debugOut();
+
 	var movesTemp = getMoveSet("Economic");
 	debug(movesTemp);
   
+
 }
 
 
@@ -281,6 +287,7 @@ function actionOnClick2() {
 	var movesTemp = getMoveSet("Expansional");
 	debug(movesTemp);
    
+
 }
 
 
@@ -293,9 +300,10 @@ function actionOnClick3() {
         }
     }
 	debugOut();
+
 	var movesTemp = getMoveSet("Aggressive");
 	debug(movesTemp);
-  
+
 }
 
 
